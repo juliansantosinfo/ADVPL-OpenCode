@@ -64,12 +64,18 @@ Return (lRet)
 @example U_jOnlyDigits("123456") -> .T.
 @example U_jOnlyDigits("A23456") -> .F.
 /*/
-User Function jOnlyDigits(cString)
+User Function jOnlyDigits(cString, lComma, lDot)
 
 	// Variaveis.
 	Local	lRet 	:= .T.
 	Local	cDigit	:= "0123456789"
 	Local	nL		:= 0
+	Default	lComma	:= .F.
+	Default	lDot	:= .F.
+
+	// Valida se considera ponto e a virgula.
+	cDigit += IIf(lComma, ",", "")
+	cDigit += IIf(lDot  , ".", "")
 
 	// Percorre string letra a letra.
 	For nL := 1 to Len(cString)
