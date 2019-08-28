@@ -84,6 +84,7 @@ Microsiga Protheus, ele trabalha vinculado a estruturas. Essas estruturas, por s
 podem ser construídas a partir dos metadados.
 Com a função FWFormStruct a estrutura será criada a partir do metadado.*/
 
+LOCAL   oStruSA1    := FWFormStruct( 1, 'SA1')
 LOCAL	oStruZAV	:= FWFormStruct( 1, 'ZAV')
 LOCAL	oStruZAX	:= FWFormStruct( 1, 'ZAX')
 LOCAL	oStruZAZ	:= FWFormStruct( 1, 'ZAZ')
