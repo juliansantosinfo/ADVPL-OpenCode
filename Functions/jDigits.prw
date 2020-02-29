@@ -36,7 +36,7 @@ Return (lRet)
 @type function
 @author Julian Santos
 @since 28/08/2018
-@param cString
+@param cChar
 @return Retorna .T. se a string contém caracteres numéricos.
 @example U_jIsDigit("1") -> .T.
 @example U_jIsDigit("A") -> .F.
@@ -60,6 +60,8 @@ Return (lRet)
 @author Julian Santos
 @since 28/08/2018
 @param cString
+@param lComma
+@param lDot
 @return Retorna .T. se a string contém caracteres numéricos.
 @example U_jOnlyDigits("123456") -> .T.
 @example U_jOnlyDigits("A23456") -> .F.
