@@ -46,13 +46,13 @@ Static Function Sample01()
     local   bValid      := {|| .T.}
     local   bInit       := {|| }
 
-    // Instantiate MsDialog object
+    // Instantiate TDialog object
     oTDialog  := TDialog():New (nTop, nLeft, nBottom, nRight, cTitle, , , , , CLR_BLACK, CLR_WHITE, , oWnd, , , , , nWidth, nHeight, lTransparent)
     /*
     oTDialog  := TDialog():New (nTop, nLeft, nBottom, nRight, cTitle, , , , , CLR_BLACK, CLR_WHITE, , oWnd, lPixel, nWidth, nHeight, lTransparent)
     */
 
-    // Shows MsDialog with Activate method.
+    // Shows TDialog with Activate method.
     oTDialog:Activate( , , , lCentered, bValid, , bInit, , )
 
 Return()
@@ -83,13 +83,13 @@ Static Function Sample02()
     local   bValid      := {|| .T.}
     local   bInit       := {|| }
 
-    // Instantiate MsDialog object
+    // Instantiate TDialog object
     oTDialog  := TDialog():New (nTop, nLeft, nBottom, nRight, cTitle, , , , nOr(WS_VISIBLE,WS_POPUP), CLR_BLACK, CLR_WHITE, , oWnd, , , , , nWidth, nHeight, lTransparent)
     /*
     oTDialog  := TDialog():New (nTop, nLeft, nBottom, nRight, cTitle, , , , nOr(WS_VISIBLE,WS_POPUP), CLR_BLACK, CLR_WHITE, , oWnd, lPixel, nWidth, nHeight, lTransparent)
     */
 
-    // Shows MsDialog with Activate method.
+    // Shows TDialog with Activate method.
     oTDialog:Activate( , , , lCentered, bValid, , bInit, , )
 
 Return()
