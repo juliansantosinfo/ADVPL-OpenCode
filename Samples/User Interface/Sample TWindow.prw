@@ -91,7 +91,7 @@ Static Function Sample02()
     oTWindow:BKEYDOWN       := {|| Alert("BKEYDOWN") }
     oTWindow:BLBUTTONUP     := {|| Alert("BLBUTTONUP") }
     oTWindow:BGOTFOCUS      := {|| Alert("BGOTFOCUS") }
-    oTWindow:BHELP          := {|| Alert("BHELP.") }
+    oTWindow:BHELP          := {|| Alert("BHELP") }
     oTWindow:BLCLICKED      := {|| Alert("BLCLICKED") }
     oTWindow:BLDBLCLICK     := {|| Alert("BLDBLCLICK") }
     oTWindow:BLOSTFOCUS     := {|| Alert("BLOSTFOCUS") }
