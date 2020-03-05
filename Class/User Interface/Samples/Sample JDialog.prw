@@ -43,7 +43,7 @@ Static Function Sample01()
 
     oJDialog:setAfterStarted( {|| Alert("setAfterStarted")} )
 
-    oJDialog:BFOCUSCHANGE := {|| oJDialog:setSize(1500, 500) }
+    oJDialog:setFocusChange({|| oJDialog:setSize(1500, 500) })
 
     TButton():New( 30, 30, "TButton", oJDialog, , 50, 15, , , , .T., , , , , ,  )
 
