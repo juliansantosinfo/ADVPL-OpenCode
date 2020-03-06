@@ -18,6 +18,9 @@ User Function xJDlgGrid()
     // Sample to JDialogGrid class with EnchoiceBar.
     Sample02()
 
+    // Sample to JDialogGrid class with context menu.
+    Sample03()
+
 Return()
 
 //-------------------------------------------------------------------
@@ -39,11 +42,11 @@ Static Function Sample01()
     local   lEnchoiceBar:= .F.
 
     // Define aHeader.
-    AADD(aHeader, {"COLUMN 1", 256, 0})
-    AADD(aHeader, {"COLUMN 2", 256, 0})
-    AADD(aHeader, {"COLUMN 3", 256, 0})
-    AADD(aHeader, {"COLUMN 4", 256, 0})
-    AADD(aHeader, {"COLUMN 5", 256, 0})
+    AADD(aHeader, {"COLUMN 1", 250, 0})
+    AADD(aHeader, {"COLUMN 2", 250, 0})
+    AADD(aHeader, {"COLUMN 3", 250, 0})
+    AADD(aHeader, {"COLUMN 4", 250, 0})
+    AADD(aHeader, {"COLUMN 5", 250, 0})
 
     // Define aCols.
     AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
@@ -54,8 +57,18 @@ Static Function Sample01()
     AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
     AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
 
-    // Instantiate JDialog object
-    oJDialogGrid  := JDialogGrid():new(cTitle, nWidth, nHeight, aHeader, aCols, lEnchoiceBar) 
+    // Instantiate JDialog object #1
+    oJDialogGrid  := JDialogGrid():new(cTitle, nWidth, nHeight)
+    oJDialogGrid:show()
+
+    // Instantiate JDialog object #2
+    oJDialogGrid  := JDialogGrid():new(cTitle, nWidth, nHeight, aHeader, aCols, lEnchoiceBar)
+    oJDialogGrid:show()
+
+    // Instantiate JDialog object #3
+    oJDialogGrid  := JDialogGrid():new(cTitle, nWidth, nHeight)
+    oJDialogGrid:setGridColumns(aHeader)
+    oJDialogGrid:setGridData(aCols)
     oJDialogGrid:show()
 
 Return()
@@ -79,11 +92,11 @@ Static Function Sample02()
     local   lEnchoiceBar:= .T.
 
     // Define aHeader.
-    AADD(aHeader, {"COLUMN 1", 256, 0})
-    AADD(aHeader, {"COLUMN 2", 256, 0})
-    AADD(aHeader, {"COLUMN 3", 256, 0})
-    AADD(aHeader, {"COLUMN 4", 256, 0})
-    AADD(aHeader, {"COLUMN 5", 256, 0})
+    AADD(aHeader, {"COLUMN 1", 250, 0})
+    AADD(aHeader, {"COLUMN 2", 250, 0})
+    AADD(aHeader, {"COLUMN 3", 250, 0})
+    AADD(aHeader, {"COLUMN 4", 250, 0})
+    AADD(aHeader, {"COLUMN 5", 250, 0})
 
     // Define aCols.
     AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
@@ -95,8 +108,56 @@ Static Function Sample02()
     AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
 
     // Instantiate JDialog object
-    oJDialogGrid  := JDialogGrid():new(cTitle, nWidth, nHeight, aHeader, aCols, lEnchoiceBar) 
+    oJDialogGrid  := JDialogGrid():new(cTitle, nWidth, nHeight, aHeader, aCols, lEnchoiceBar)
     oJDialogGrid:oDialog:setEnchoiceBar()
+    oJDialogGrid:show()
+
+Return()
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} Sample03
+@type static function
+@author Julian de Almeida Santos
+@since 05/03/2020
+/*/
+//-------------------------------------------------------------------
+Static Function Sample03()
+
+    // Variables.
+    local   oJDialog    := Nil
+    local   cTitle      := "Sample to JDialogGrid class with context menu"
+    local   nWidth      := 1280
+    local   nHeight     := 720
+    local   aHeader     := {}
+    local   aCols       := {}
+    local   lEnchoiceBar:= .T.
+    local   aMenuItens  := {}
+
+    // Define aHeader.
+    AADD(aHeader, {"COLUMN 1", 250, 0})
+    AADD(aHeader, {"COLUMN 2", 250, 0})
+    AADD(aHeader, {"COLUMN 3", 250, 0})
+    AADD(aHeader, {"COLUMN 4", 250, 0})
+    AADD(aHeader, {"COLUMN 5", 250, 0})
+
+    // Define aCols.
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
+
+    // Define menu itens.
+    AADD(aMenuItens, {"Item 1", {|| Alert("Selecionado o Item 1!")}, })
+    AADD(aMenuItens, {"Item 2", {|| Alert("Selecionado o Item 2!")}, })
+    AADD(aMenuItens, {"Item 3", {|| Alert("Selecionado o Item 3!")}, })
+
+    // Instantiate JDialog object
+    oJDialogGrid  := JDialogGrid():new(cTitle, nWidth, nHeight, aHeader, aCols, lEnchoiceBar)
+    oJDialogGrid:oDialog:setEnchoiceBar()
+    oJDialogGrid:addContextMenu(aMenuItens)
     oJDialogGrid:show()
 
 Return()
