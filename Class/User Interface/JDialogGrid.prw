@@ -21,6 +21,9 @@ Class JDialogGrid
     method setGridColumns()
     method setGridData()
 
+    method setSelectionByRow()
+    method setSelectionByColumn()
+
     method getDialog()
     method getGrid()
 
@@ -204,6 +207,30 @@ method setGridData(aCols) class JDialogGrid
 return()
 
 //-------------------------------------------------------------------
+/*/{Protheus.doc} selectionByRow
+@description Defines the type of grid navigation per line
+@type 06/03/2020
+@author Julian de Almeida Santos
+@since 06/03/2020
+/*/
+//-------------------------------------------------------------------
+method setSelectionByRow()
+    self:oGrid:SetSelectionMode(0)
+return()
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} selectionByColumn
+@description Defines the type of grid navigation per column
+@type 06/03/2020
+@author Julian de Almeida Santos
+@since 06/03/2020
+/*/
+//-------------------------------------------------------------------
+method setSelectionByColumn()
+    self:oGrid:SetSelectionMode(1)
+return()
+
+//-------------------------------------------------------------------
 /*/{Protheus.doc} getDialog
 @description Return JDialog object.
 @type method
@@ -212,7 +239,7 @@ return()
 /*/
 //-------------------------------------------------------------------
 method getDialog() class JDialogGrid
-return(self:oDialog)
+return(@self:oDialog)
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} getGrid
@@ -223,4 +250,4 @@ return(self:oDialog)
 /*/
 //-------------------------------------------------------------------
 method getGrid() class JDialogGrid
-return(self:oGrid)
+return(@self:oGrid)
