@@ -21,14 +21,22 @@ Class JDialogGrid
     method setGridColumns()
     method setGridData()
 
-    method setSelectionByRow()
-    method setSelectionByColumn()
+    method setRowSelection()
+    method setColumnSelection()
+
+    method setSortHeader()
+    method sortColumn()
+
+    method addContextMenu()
+    method removeContextMenu()
 
     method getDialog()
     method getGrid()
+    method getMenu()
 
     data oDialog    as Object
     data oGrid      as Object
+    data oMenu      as Object
 
 EndClass
 
@@ -65,9 +73,10 @@ method new(cTitle, nWidth, nHeight, aHeader, aCols, lEnchoiceBar) class JDialogG
 
     self:oGrid := TGrid():New(self:oDialog, nGridRow, nGridCol, nGridWidth, nGridHeight)
 
-    self:setGridColumns(aHeader)
-
-    self:setGridData(aCols)
+    If !Empty(aHeader) .AND. !Empty(aCols)
+        self:setGridColumns(aHeader)
+        self:setGridData(aCols)
+    EndIf
 
 return()
 
@@ -207,27 +216,117 @@ method setGridData(aCols) class JDialogGrid
 return()
 
 //-------------------------------------------------------------------
-/*/{Protheus.doc} selectionByRow
+/*/{Protheus.doc} setRowSelection
 @description Defines the type of grid navigation per line
 @type 06/03/2020
 @author Julian de Almeida Santos
 @since 06/03/2020
 /*/
 //-------------------------------------------------------------------
-method setSelectionByRow()
+method setRowSelection() class JDialogGrid
     self:oGrid:SetSelectionMode(0)
 return()
 
 //-------------------------------------------------------------------
-/*/{Protheus.doc} selectionByColumn
+/*/{Protheus.doc} setColumnSelection
 @description Defines the type of grid navigation per column
 @type 06/03/2020
 @author Julian de Almeida Santos
 @since 06/03/2020
 /*/
 //-------------------------------------------------------------------
-method setSelectionByColumn()
+method setColumnSelection() class JDialogGrid
     self:oGrid:SetSelectionMode(1)
+return()
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} setSortHeader
+@description Defines whether the click on the column header orders it.
+@type 06/03/2020
+@author Julian de Almeida Santos
+@since 06/03/2020
+/*/
+//-------------------------------------------------------------------
+method setSortHeader(lSort) class JDialogGrid
+    
+    // Variables.
+    local   bHeaderClick := {|oGrid, nColumn| self:sortColumn(nColumn) }
+    default lSort        := .T.
+
+    If lSort
+        self:oGrid:SetHeaderClick(bHeaderClick)
+    EndIf
+
+return()
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} setSortHeader
+@description Sorts informed column.
+@type 06/03/2020
+@author Julian de Almeida Santos
+@since 06/03/2020
+/*/
+//-------------------------------------------------------------------
+method sortColumn(nColumn) class JDialogGrid
+
+    // Variables.
+    local   aCols   := {}
+
+
+return()
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} addContextMenu
+@description Adds context menu to the grid.
+@type 06/03/2020
+@author Julian de Almeida Santos
+@since 06/03/2020
+/*/
+//-------------------------------------------------------------------
+method addContextMenu(aMenuItens) class JDialogGrid
+
+    // Variables
+    local   oMenuItem       := Nil
+    local   cItemTitle      := ""
+    local   cItemBlock      := {||}
+    private cItemResource   := ""
+    default aMenuItens      := {}
+
+    // Define TMenu.
+    self:oMenu := TMenu():New(0,0,0,0,.T.)
+
+    // Cycles through the array of items from the add menu to the context menu.
+    For nM := 1 To Len(aMenuItens)
+
+        // Define values for menu item.
+        cItemTitle      := aMenuItens[nM,1]
+        cItemBlock      := aMenuItens[nM,2]
+        cItemResource   := aMenuItens[nM,3]
+        cItemResource   := IIf(Type('cItemResource') != "C", "", cItemResource)
+
+        // Define TMenuItem.
+        oMenuItem := TMenuItem():New(self:oDialog, cItemTitle,,,, cItemBlock,, cItemResource,,,,,,,.T.)
+
+        // Adds item to the context menu.
+        self:oMenu:Add(oMenuItem)
+
+    Next
+
+    // Adds context menu to the grid.
+    self:oGrid:setPopup(self:oMenu)
+
+return()
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} removeContextMenu
+@description Removes context menu from the grid.
+@type 06/03/2020
+@author Julian de Almeida Santos
+@since 06/03/2020
+/*/
+//-------------------------------------------------------------------
+method removeContextMenu() class JDialogGrid
+    self:oGrid:setPoupUp()
 return()
 
 //-------------------------------------------------------------------
@@ -251,3 +350,14 @@ return(@self:oDialog)
 //-------------------------------------------------------------------
 method getGrid() class JDialogGrid
 return(@self:oGrid)
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} getMenu
+@description Return TGrid object.
+@type method
+@author Julian de ALmeida Santos
+@since 05/03/2020
+/*/
+//-------------------------------------------------------------------
+method getMenu() class JDialogGrid
+return(@self:oMenu)
