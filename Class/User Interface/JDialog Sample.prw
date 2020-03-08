@@ -87,7 +87,7 @@ Static Function Sample03()
     oJDialog:setLeftClick(  {|| oJDialog:setSize(300, 300, .T.)} )  // set code block to left click button.
     oJDialog:setRightClick( {|| oJDialog:setSize(500, 500, .T.)} )  // set code block to right click button.
     oJDialog:setDoubleClick( {|| oJDialog:setTitle("New Title")} )  // set code block to doble click button.
-    oJDialog:setAfterStarted( {|| Alert("JDialog Started.")} )      //
+    oJDialog:setBeforeShowing( {|| Alert("JDialog Started.")} )      //
 
     oJDialog:show()
 

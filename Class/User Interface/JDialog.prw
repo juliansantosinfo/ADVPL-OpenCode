@@ -217,7 +217,7 @@ method setDoubleClick(bCodeBlock) class JDialog
 return()
 
 //-------------------------------------------------------------------
-/*/{Protheus.doc} setAfterStarted
+/*/{Protheus.doc} setBeforeShowing
 @description Define codeBlock to be executed before showing dialog.
 @type method
 @author Julian de Almeida Santos
