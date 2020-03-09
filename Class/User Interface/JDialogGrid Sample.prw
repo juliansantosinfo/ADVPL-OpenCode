@@ -1,6 +1,7 @@
 #include 'protheus.ch'
 #include 'parmtype.ch'
 #include 'totvs.ch'
+#include 'tbiconn.ch'
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} xJDlgGrid
@@ -11,6 +12,10 @@
 /*/
 //-------------------------------------------------------------------
 User Function xJDlgGrid()
+
+    RESET ENVIRONMENT
+    RPCSetType(3)
+    PREPARE ENVIRONMENT EMPRESA '01' FILIAL '01' MODULO 'FAT'
 
     // Sample to JDialogGrid class without EnchoiceBar.
     Sample01()
@@ -49,26 +54,37 @@ Static Function Sample01()
     AADD(aHeader, {"COLUMN 5", 250, 0})
 
     // Define aCols.
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 9.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 9.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 8.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 7.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 6.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 5.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 4.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 3.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 2.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1.36})
 
-    // Instantiate JDialog object #1
+    // Instantiate JDialogGrid object #1
+    //oJDialogGrid  := JDialogGrid():new(cTitle, nWidth, nHeight)
+    //oJDialogGrid:show()
+
+    // Instantiate JDialogGrid object #2
+    //oJDialogGrid  := JDialogGrid():new(cTitle, nWidth, nHeight, aHeader, aCols, lEnchoiceBar)
+    //oJDialogGrid:show()
+
+    // Instantiate JDialogGrid object #3
+    //oJDialogGrid  := JDialogGrid():new(cTitle, nWidth, nHeight)
+    //oJDialogGrid:setGridColumns(aHeader)
+    //oJDialogGrid:setGridData(aCols)
+    //oJDialogGrid:setSortHeader(.T.)
+    //oJDialogGrid:show()
+
+    // Instantiate JDialogGrid object #4
+    cSQL := "SELECT * FROM ZB7011 "
     oJDialogGrid  := JDialogGrid():new(cTitle, nWidth, nHeight)
-    oJDialogGrid:show()
-
-    // Instantiate JDialog object #2
-    oJDialogGrid  := JDialogGrid():new(cTitle, nWidth, nHeight, aHeader, aCols, lEnchoiceBar)
-    oJDialogGrid:show()
-
-    // Instantiate JDialog object #3
-    oJDialogGrid  := JDialogGrid():new(cTitle, nWidth, nHeight)
-    oJDialogGrid:setGridColumns(aHeader)
-    oJDialogGrid:setGridData(aCols)
+    oJDialogGrid:setFromSQL(cSQL)
+    oJDialogGrid:setSortHeader(.T.)
     oJDialogGrid:show()
 
 Return()
@@ -99,13 +115,16 @@ Static Function Sample02()
     AADD(aHeader, {"COLUMN 5", 250, 0})
 
     // Define aCols.
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 9.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 9.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 8.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 7.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 6.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 5.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 4.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 3.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 2.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1.36})
 
     // Instantiate JDialog object
     oJDialogGrid  := JDialogGrid():new(cTitle, nWidth, nHeight, aHeader, aCols, lEnchoiceBar)
@@ -141,13 +160,16 @@ Static Function Sample03()
     AADD(aHeader, {"COLUMN 5", 250, 0})
 
     // Define aCols.
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
-    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1259.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 9.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 9.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 8.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 7.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 6.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 5.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 4.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 3.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 2.36})
+    AADD(aCols, {"Text 1", "Text 2", "Text 3", Date(), 1.36})
 
     // Define menu itens.
     AADD(aMenuItens, {"Item 1", {|| Alert("Selecionado o Item 1!")}, })

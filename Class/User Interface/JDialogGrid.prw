@@ -1,6 +1,14 @@
 #include 'protheus.ch'
 #include 'parmtype.ch'
 #include 'totvs.ch'
+#include 'topconn.ch'
+
+#define GRID_MOVEUP       0
+#define GRID_MOVEDOWN     1
+#define GRID_MOVEHOME     2
+#define GRID_MOVEEND      3
+#define GRID_MOVEPAGEUP   4
+#define GRID_MOVEPAGEDOWN 5
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} JDialogGrid
@@ -20,12 +28,15 @@ Class JDialogGrid
     method getGridSize()
     method setGridColumns()
     method setGridData()
+    method setFromSQL()
+    method setCursorMove()
 
     method setRowSelection()
     method setColumnSelection()
 
     method setSortHeader()
     method sortColumn()
+    method clearRows()
 
     method addContextMenu()
     method removeContextMenu()
@@ -34,9 +45,15 @@ Class JDialogGrid
     method getGrid()
     method getMenu()
 
+    method getHeader()
+    method getData()
+
     data oDialog    as Object
     data oGrid      as Object
     data oMenu      as Object
+
+    data aHeader    as Array
+    data aCols      as Array
 
 EndClass
 
@@ -73,9 +90,13 @@ method new(cTitle, nWidth, nHeight, aHeader, aCols, lEnchoiceBar) class JDialogG
 
     self:oGrid := TGrid():New(self:oDialog, nGridRow, nGridCol, nGridWidth, nGridHeight)
 
+    self:oGrid:bCursorMove := { |oGrid,nMvType,nCurPos,nOffSet,nVisRows| self:setCursorMove(oGrid, nMvType, nCurPos, nOffSet, nVisRows)}
+
     If !Empty(aHeader) .AND. !Empty(aCols)
-        self:setGridColumns(aHeader)
-        self:setGridData(aCols)
+        self:aHeader := aHeader
+        self:aCols := aCols
+        self:setGridColumns(self:aHeader)
+        self:setGridData(self:aCols)
     EndIf
 
 return()
@@ -161,15 +182,17 @@ method setGridColumns(aHeader) class JDialogGrid
     local   nPosWidth := 2
     local   nPosAlign := 3
 
-    For nH := 1 To Len(aHeader)
+    self:aHeader := aHeader
+
+    For nH := 1 To Len(self:aHeader)
 
         // Define ID to column.
         nColumnID++
 
         // Set variables to column.
-        cColumnTitle := aHeader[nH,nPosTitle]
-        nColumnWidth := aHeader[nH,nPosWidth]
-        nColumnAlign := aHeader[nH,nPosAlign]
+        cColumnTitle := self:aHeader[nH,nPosTitle]
+        nColumnWidth := self:aHeader[nH,nPosWidth]
+        nColumnAlign := self:aHeader[nH,nPosAlign]
 
         // Add column to grid.
         self:oGrid:AddColumn( nColumnID, cColumnTitle, nColumnWidth, nColumnAlign)
@@ -191,23 +214,27 @@ method setGridData(aCols) class JDialogGrid
     // Variables.
     local   nHeaderSize := Len(self:oGrid:GetColumnsSize())
 
-    For nRow := 1 To Len(aCols)
+    self:aCols := aCols
 
-        If Len(aCols[nRow]) > nHeaderSize
-            ASize(aCols[nRow], nHeaderSize)
+    self:clearRows()
+
+    For nRow := 1 To Len(self:aCols)
+
+        If Len(self:aCols[nRow]) > nHeaderSize
+            ASize(self:aCols[nRow], nHeaderSize)
         EndIf
 
-        For nColumn := 1 To Len(aCols[nRow])
+        For nColumn := 1 To Len(self:aCols[nRow])
 
-            If ValType(aCols[nRow,nColumn]) == "D"
-                aCols[nRow,nColumn] := DTOC(aCols[nRow,nColumn])
-            ElseIf ValType(aCols[nRow,nColumn]) == "N"
-                aCols[nRow,nColumn] := AllTrim(Str(aCols[nRow,nColumn]))
+            If ValType(self:aCols[nRow,nColumn]) == "D"
+                self:aCols[nRow,nColumn] := DTOC(self:aCols[nRow,nColumn])
+            ElseIf ValType(self:aCols[nRow,nColumn]) == "N"
+                self:aCols[nRow,nColumn] := AllTrim(Str(self:aCols[nRow,nColumn]))
             EndIf
 
         Next
 
-        self:oGrid:setRowData( nRow, {|oGrid| aCols[nRow] } )
+        self:oGrid:setRowData( nRow, {|oGrid| self:aCols[nRow] } )
 
     Next
 
@@ -216,28 +243,102 @@ method setGridData(aCols) class JDialogGrid
 return()
 
 //-------------------------------------------------------------------
-/*/{Protheus.doc} setRowSelection
-@description Defines the type of grid navigation per line
+/*/{Protheus.doc} setSortHeader
+@description Defines grid data from SQL.
 @type 06/03/2020
 @author Julian de Almeida Santos
 @since 06/03/2020
 /*/
 //-------------------------------------------------------------------
-method setRowSelection() class JDialogGrid
-    self:oGrid:SetSelectionMode(0)
+method setFromSQL(cSQL) class JDialogGrid
+
+    // Variables.
+    local   cAliasSQL   := CriaTrab(,.F.)
+    local   aStruct     := {}
+    local   aRow        := {}
+    default cSQL        := ""
+
+    self:aHeader := {}
+    self:aCols := {}
+
+    TCQUERY cSQL ALIAS &cAliasSQL NEW
+
+    DBSelectArea(cAliasSQL)
+    DbGoTop()
+
+    aStruct := (cAliasSQL)->(DBStruct())
+
+    For nH := 1 To Len(aStruct)
+
+        cColName := aStruct[nH,1]
+        cColType := aStruct[nH,2]
+        cColSize := aStruct[nH,3]
+        cColSize := (IIf(Len(cColName) > cColSize, Len(cColName), cColSize) * 7.5)
+        cColAling:= IIf(cColType == "C", 1, IIf(cColType == "N", 2, 0))
+
+        AADD(self:aHeader, {cColName, cColSize, cColAling})
+
+    Next
+
+    While !(cAliasSQL)->(EOF())
+
+        // Inicializa array com informacoes da linha atual.
+        aRow := {}
+
+        For nX := 1 To Len(aStruct)
+            // Add coluna ao array do item atual.
+            AADD(aRow, (cAliasSQL)->&(aStruct[nX,01]))
+        Next
+
+        // Add item atual ao array de itens geral.
+        AADD(self:aCols, aRow)
+
+        (cAliasSQL)->(DbSkip())
+
+    End
+
+    self:setGridColumns(self:aHeader)
+    self:setGridData(self:aCols)
+
 return()
 
 //-------------------------------------------------------------------
-/*/{Protheus.doc} setColumnSelection
-@description Defines the type of grid navigation per column
-@type 06/03/2020
+/*/{Protheus.doc} setCursorMove
+@description 
+@type static function
 @author Julian de Almeida Santos
-@since 06/03/2020
+@since 09/03/2020
 /*/
 //-------------------------------------------------------------------
-method setColumnSelection() class JDialogGrid
-    self:oGrid:SetSelectionMode(1)
-return()
+method setCursorMove(oGrid, nMvType, nCurPos, nOffSet, nVisRows) class JDialogGrid
+
+    If nMvType == 0
+
+        nGoLine := nCurPos-nOffSet
+        If nCurPos < 1
+            return()
+        Else
+            //self:oGrid:scrollLine(-1)
+            self:oGrid:setSelectedRow(nCurPos-1)
+        EndIf
+
+    ElseIf nMvType == 1
+
+        nGoLine := nCurPos+nOffSet
+        If nCurPos == (nVisRows - 1)
+            self:oGrid:scrollLine(nOffSet)
+            self:oGrid:setSelectedRow(nGoLine)
+        Else
+            self:oGrid:setSelectedRow(nGoLine)
+        EndIf
+
+    ElseIf nMvType == 2
+    ElseIf nMvType == 3
+    ElseIf nMvType == 4
+    ElseIf nMvType == 5
+    EndIf
+
+return
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} setSortHeader
@@ -248,19 +349,21 @@ return()
 /*/
 //-------------------------------------------------------------------
 method setSortHeader(lSort) class JDialogGrid
-    
+
     // Variables.
     local   bHeaderClick := {|oGrid, nColumn| self:sortColumn(nColumn) }
     default lSort        := .T.
 
     If lSort
         self:oGrid:SetHeaderClick(bHeaderClick)
+    Else
+        self:oGrid:SetHeaderClick({||})
     EndIf
 
 return()
 
 //-------------------------------------------------------------------
-/*/{Protheus.doc} setSortHeader
+/*/{Protheus.doc} sortColumn
 @description Sorts informed column.
 @type 06/03/2020
 @author Julian de Almeida Santos
@@ -269,10 +372,25 @@ return()
 //-------------------------------------------------------------------
 method sortColumn(nColumn) class JDialogGrid
 
-    // Variables.
-    local   aCols   := {}
+    // Variables
+    default   nColumn := 1
 
+    self:aCols := ASort(self:aCols, , , {|x,y| x[nColumn] < y[nColumn]})
 
+    self:setGridData(self:aCols)
+
+return()
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} clearRows
+@description Erase grid lines.
+@type 06/03/2020
+@author Julian de Almeida Santos
+@since 06/03/2020
+/*/
+//-------------------------------------------------------------------
+method clearRows() class JDialogGrid
+    self:oGrid:ClearRows()
 return()
 
 //-------------------------------------------------------------------
@@ -330,6 +448,30 @@ method removeContextMenu() class JDialogGrid
 return()
 
 //-------------------------------------------------------------------
+/*/{Protheus.doc} setRowSelection
+@description Defines the type of grid navigation per line
+@type 06/03/2020
+@author Julian de Almeida Santos
+@since 06/03/2020
+/*/
+//-------------------------------------------------------------------
+method setRowSelection() class JDialogGrid
+    self:oGrid:SetSelectionMode(0)
+return()
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} setColumnSelection
+@description Defines the type of grid navigation per column
+@type 06/03/2020
+@author Julian de Almeida Santos
+@since 06/03/2020
+/*/
+//-------------------------------------------------------------------
+method setColumnSelection() class JDialogGrid
+    self:oGrid:SetSelectionMode(1)
+return()
+
+//-------------------------------------------------------------------
 /*/{Protheus.doc} getDialog
 @description Return JDialog object.
 @type method
@@ -361,3 +503,25 @@ return(@self:oGrid)
 //-------------------------------------------------------------------
 method getMenu() class JDialogGrid
 return(@self:oMenu)
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} getHeader()
+@description Returns array with header from the grid.
+@type method
+@author Julian de ALmeida Santos
+@since 05/03/2020
+/*/
+//-------------------------------------------------------------------
+method getHeader() class JDialogGrid
+return(@self:aHeader)
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} getData()
+@description Returns array with data from the grid.
+@type method
+@author Julian de ALmeida Santos
+@since 05/03/2020
+/*/
+//-------------------------------------------------------------------
+method getData() class JDialogGrid
+return(@self:aCols)
