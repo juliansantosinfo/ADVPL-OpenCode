@@ -55,6 +55,8 @@ Class JDialogGrid
     data aHeader    as Array
     data aCols      as Array
 
+    data nAt        as Array
+
 EndClass
 
 //-------------------------------------------------------------------
@@ -238,7 +240,9 @@ method setGridData(aCols) class JDialogGrid
 
     Next
 
-    self:oGrid:setSelectedRow(1)
+    self:nAt := 1
+
+    self:oGrid:setSelectedRow(self:nAt)
 
 return()
 
@@ -314,16 +318,32 @@ method setCursorMove(oGrid, nMvType, nCurPos, nOffSet, nVisRows) class JDialogGr
 
     If nMvType == 0
 
-        nGoLine := nCurPos-nOffSet
-        If nCurPos < 1
-            return()
-        Else
-            //self:oGrid:scrollLine(-1)
-            self:oGrid:setSelectedRow(nCurPos-1)
+        If self:nAt == 1
+           return()    
         EndIf
+
+        self:nAt -= nOffSet
+
+        If nCurPos == 0
+           self:oGrid:scrollLine(-1)
+           self:oGrid:setRowData( nCurPos, {|oGrid| self:aCols[self:nAt] } )
+        Else
+            nCurPos -= nOffSet
+        EndIf
+
+        self:oGrid:setSelectedRow(nCurPos)
 
     ElseIf nMvType == 1
 
+        If nCurPos == -1
+           nCurPos := 0
+        EndIf
+
+        If self:nAt == Len(self:aCols)
+           return()    
+        EndIf
+
+        self:nAt += nOffSet
         nGoLine := nCurPos+nOffSet
         If nCurPos == (nVisRows - 1)
             self:oGrid:scrollLine(nOffSet)
