@@ -317,9 +317,9 @@ return()
 //-------------------------------------------------------------------
 method setCursorMove(oGrid, nMvType, nCurPos, nOffSet, nVisRows) class JDialogGrid
 
-    If nMvType == 0
+    If nMvType == GRID_MOVEUP
 
-        If self:nAt == GRID_MOVEUP
+        If self:nAt == 1
             return()
         EndIf
 
@@ -346,7 +346,7 @@ method setCursorMove(oGrid, nMvType, nCurPos, nOffSet, nVisRows) class JDialogGr
 
         self:nAt += nOffSet
         nGoLine := nCurPos+nOffSet
-        If nCurPos == (nVisRows - 1)
+        If nCurPos >= (nVisRows - 1)
             self:oGrid:scrollLine(nOffSet)
             self:oGrid:setSelectedRow(nGoLine)
         Else
@@ -355,39 +355,12 @@ method setCursorMove(oGrid, nMvType, nCurPos, nOffSet, nVisRows) class JDialogGr
 
     ElseIf nMvType == GRID_MOVEHOME
 
-        If self:nAt == 1
-            return()
-        EndIf
-
-        While self:nAt != 1
-
-            self:nAt -= 1
-
-            If nCurPos == 0
-                self:oGrid:scrollLine(-1)
-                self:oGrid:setRowData( nCurPos, {|oGrid| self:aCols[self:nAt] } )
-            Else
-                nCurPos -= 1
-            EndIf
-
-            self:oGrid:setSelectedRow(nCurPos)
-
-        EndDO
+        self:oGrid:setSelectedRow(0)
+        self:oGrid:
 
     ElseIf nMvType  == GRID_MOVEEND
 
-        nMaxRow  := Len(self:aCols)
-        nJumpRows:= (nMaxRow - self:nAt) - (nVisRows - 1)
-
-        If self:nAt == nMaxRow
-            return()
-        EndIf
-
-        nCurPos := (nVisRows - 1)
-        self:oGrid:setSelectedRow(nCurPos)
-
-        self:oGrid:scrollLine(nJumpRows)
-        self:nAt += nJumpRows
+        self:oGrid:setSelectedRow((nVisRows -1))
 
     ElseIf nMvType == 4
     ElseIf nMvType == 5
