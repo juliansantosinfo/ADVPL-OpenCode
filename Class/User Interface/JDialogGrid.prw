@@ -278,6 +278,7 @@ method setFromSQL(cSQL) class JDialogGrid
         cColType := aStruct[nH,2]
         cColSize := aStruct[nH,3]
         cColSize := (IIf(Len(cColName) > cColSize, Len(cColName), cColSize) * 7.5)
+        cColSize := IIf(cColSize > 400, 400, cColSize)
         cColAling:= IIf(cColType == "C", 1, IIf(cColType == "N", 2, 0))
 
         AADD(self:aHeader, {cColName, cColSize, cColAling})
@@ -318,29 +319,29 @@ method setCursorMove(oGrid, nMvType, nCurPos, nOffSet, nVisRows) class JDialogGr
 
     If nMvType == 0
 
-        If self:nAt == 1
-           return()    
+        If self:nAt == GRID_MOVEUP
+            return()
         EndIf
 
         self:nAt -= nOffSet
 
         If nCurPos == 0
-           self:oGrid:scrollLine(-1)
-           self:oGrid:setRowData( nCurPos, {|oGrid| self:aCols[self:nAt] } )
+            self:oGrid:scrollLine(-1)
+            self:oGrid:setRowData( nCurPos, {|oGrid| self:aCols[self:nAt] } )
         Else
             nCurPos -= nOffSet
         EndIf
 
         self:oGrid:setSelectedRow(nCurPos)
 
-    ElseIf nMvType == 1
+    ElseIf nMvType == GRID_MOVEDOWN
 
         If nCurPos == -1
-           nCurPos := 0
+            nCurPos := 0
         EndIf
 
         If self:nAt == Len(self:aCols)
-           return()    
+            return()
         EndIf
 
         self:nAt += nOffSet
@@ -352,8 +353,42 @@ method setCursorMove(oGrid, nMvType, nCurPos, nOffSet, nVisRows) class JDialogGr
             self:oGrid:setSelectedRow(nGoLine)
         EndIf
 
-    ElseIf nMvType == 2
-    ElseIf nMvType == 3
+    ElseIf nMvType == GRID_MOVEHOME
+
+        If self:nAt == 1
+            return()
+        EndIf
+
+        While self:nAt != 1
+
+            self:nAt -= 1
+
+            If nCurPos == 0
+                self:oGrid:scrollLine(-1)
+                self:oGrid:setRowData( nCurPos, {|oGrid| self:aCols[self:nAt] } )
+            Else
+                nCurPos -= 1
+            EndIf
+
+            self:oGrid:setSelectedRow(nCurPos)
+
+        EndDO
+
+    ElseIf nMvType  == GRID_MOVEEND
+
+        nMaxRow  := Len(self:aCols)
+        nJumpRows:= (nMaxRow - self:nAt) - (nVisRows - 1)
+
+        If self:nAt == nMaxRow
+            return()
+        EndIf
+
+        nCurPos := (nVisRows - 1)
+        self:oGrid:setSelectedRow(nCurPos)
+
+        self:oGrid:scrollLine(nJumpRows)
+        self:nAt += nJumpRows
+
     ElseIf nMvType == 4
     ElseIf nMvType == 5
     EndIf

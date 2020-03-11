@@ -81,7 +81,7 @@ Static Function Sample01()
     //oJDialogGrid:show()
 
     // Instantiate JDialogGrid object #4
-    cSQL := "SELECT * FROM ZB7011 "
+    cSQL := "SELECT * FROM Z54010 "
     oJDialogGrid  := JDialogGrid():new(cTitle, nWidth, nHeight)
     oJDialogGrid:setFromSQL(cSQL)
     oJDialogGrid:setSortHeader(.T.)
