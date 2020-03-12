@@ -29,7 +29,11 @@ Class JDialogGrid
     method setGridColumns()
     method setGridData()
     method setFromSQL()
+    
     method setCursorMove()
+    method cursorMove()
+    method GoUP()
+    method GoDown()
 
     method setRowSelection()
     method setColumnSelection()
@@ -91,8 +95,7 @@ method new(cTitle, nWidth, nHeight, aHeader, aCols, lEnchoiceBar) class JDialogG
     nGridHeight:= aGridPosition[1,4]
 
     self:oGrid := TGrid():New(self:oDialog, nGridRow, nGridCol, nGridWidth, nGridHeight)
-
-    self:oGrid:bCursorMove := { |oGrid,nMvType,nCurPos,nOffSet,nVisRows| self:setCursorMove(oGrid, nMvType, nCurPos, nOffSet, nVisRows)}
+    self:setCursorMove()
 
     If !Empty(aHeader) .AND. !Empty(aCols)
         self:aHeader := aHeader
@@ -300,7 +303,7 @@ method setFromSQL(cSQL) class JDialogGrid
 
         (cAliasSQL)->(DbSkip())
 
-    End
+    EndDo
 
     self:setGridColumns(self:aHeader)
     self:setGridData(self:aCols)
@@ -309,60 +312,99 @@ return()
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} setCursorMove
-@description 
+@description Set code block for bCursorMove property.
 @type static function
 @author Julian de Almeida Santos
 @since 09/03/2020
 /*/
 //-------------------------------------------------------------------
-method setCursorMove(oGrid, nMvType, nCurPos, nOffSet, nVisRows) class JDialogGrid
+method setCursorMove(bCursorMove) class JDialogGrid
+    
+    // Variables.
+    default bCursorMove := { |oGrid,nMvType,nCurPos,nOffSet,nVisRows| self:cursorMove(oGrid, nMvType, nCurPos, nOffSet, nVisRows)}
+
+    // Define code block to bCursorMove property.
+    self:oGrid:bCursorMove := bCursorMove
+
+return()
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} cursorMove
+@description Defines cursor movement.
+@type static function
+@author Julian de Almeida Santos
+@since 12/03/2020
+/*/
+//-------------------------------------------------------------------
+method cursorMove(oGrid, nMvType, nCurPos, nOffSet, nVisRows) class JDialogGrid
 
     If nMvType == GRID_MOVEUP
-
-        If self:nAt == 1
-            return()
-        EndIf
-
-        self:nAt -= nOffSet
-
-        If nCurPos == 0
-            self:oGrid:scrollLine(-1)
-            self:oGrid:setRowData( nCurPos, {|oGrid| self:aCols[self:nAt] } )
-        Else
-            nCurPos -= nOffSet
-        EndIf
-
-        self:oGrid:setSelectedRow(nCurPos)
-
+        self:GoUP(nCurPos, nOffSet, nVisRows)
     ElseIf nMvType == GRID_MOVEDOWN
-
-        If nCurPos == -1
-            nCurPos := 0
-        EndIf
-
-        If self:nAt == Len(self:aCols)
-            return()
-        EndIf
-
-        self:nAt += nOffSet
-        nGoLine := nCurPos+nOffSet
-        If nCurPos >= (nVisRows - 1)
-            self:oGrid:scrollLine(nOffSet)
-            self:oGrid:setSelectedRow(nGoLine)
-        Else
-            self:oGrid:setSelectedRow(nGoLine)
-        EndIf
-
+        self:GoDown(nCurPos, nOffSet, nVisRows)
     ElseIf nMvType == GRID_MOVEHOME
-
-        self:oGrid:setSelectedRow(0)
-
     ElseIf nMvType  == GRID_MOVEEND
+    ElseIf nMvType == GRID_MOVEPAGEUP
+    ElseIf nMvType == GRID_MOVEPAGEDOWN
+    EndIf
 
-        self:oGrid:setSelectedRow((nVisRows -1))
+return
 
-    ElseIf nMvType == 4
-    ElseIf nMvType == 5
+//-------------------------------------------------------------------
+/*/{Protheus.doc} GoUP
+@description Moves cursor up.
+@type static function
+@author Julian de Almeida Santos
+@since 12/03/2020
+/*/
+//-------------------------------------------------------------------
+method GoUP(nCurPos, nOffSet, nVisRows) class JDialogGrid
+
+    If self:nAt == 1
+        return()
+    EndIf
+
+    self:nAt -= nOffSet
+
+    If nCurPos == 0
+        self:oGrid:scrollLine(-1)
+        self:oGrid:setRowData( nCurPos, {|oGrid| self:aCols[self:nAt] } )
+    Else
+        nCurPos -= nOffSet
+    EndIf
+
+    self:oGrid:setSelectedRow(nCurPos)
+
+return
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} GoDown
+@description Moves cursor down.
+@type static function
+@author Julian de Almeida Santos
+@since 12/03/2020
+/*/
+//-------------------------------------------------------------------
+method GoDown(nCurPos, nOffSet, nVisRows) class JDialogGrid
+
+    // Variables.
+    local   nGoLine := 0
+
+    If nCurPos == -1
+        nCurPos := 0
+    EndIf
+
+    If self:nAt == Len(self:aCols)
+        return()
+    EndIf
+
+    self:nAt += nOffSet
+    nGoLine := nCurPos+nOffSet
+    If nCurPos >= (nVisRows - 1)
+        self:oGrid:scrollLine(nOffSet)
+        self:oGrid:setSelectedRow(nGoLine)
+    Else
+        self:oGrid:setSelectedRow(nGoLine)
     EndIf
 
 return
