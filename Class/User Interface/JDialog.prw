@@ -39,7 +39,7 @@ EndClass
 method new(cTitle, nWidth, nHeight) class JDialog
 
     // Call to the parent class constructor.
-    :New(0, 0, 0, 0, cTitle, , , , , , , , , , , , , nWidth, nHeight, )
+    :New(0, 0, 0, 0, cTitle, , , , , , , , , .T., , , , nWidth, nHeight, )
 
 return()
 
