@@ -356,7 +356,6 @@ method setCursorMove(oGrid, nMvType, nCurPos, nOffSet, nVisRows) class JDialogGr
     ElseIf nMvType == GRID_MOVEHOME
 
         self:oGrid:setSelectedRow(0)
-        self:oGrid:
 
     ElseIf nMvType  == GRID_MOVEEND
 
