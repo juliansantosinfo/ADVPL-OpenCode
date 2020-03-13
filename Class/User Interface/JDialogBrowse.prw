@@ -28,7 +28,6 @@ Class JDialogBrowse
     method getBrowse()
     method getMenu()
 
-    method setAlias()
     method setHeader()
     method getHeader()
     method setData()
@@ -37,7 +36,13 @@ Class JDialogBrowse
     method setSortHeader()
     method sortColumn()
 
+    method setDbClick()
+
+    method getRow()
     method getColumn()
+    method getValue()
+    method setValue()
+
     method getColSize()
     method setColSize()
 
@@ -54,10 +59,8 @@ Class JDialogBrowse
 
     method getDlgTile()
     method setDlgTile()
-
     method getDlgWidth()
     method setDlgWidth()
-
     method getDlgHeight()
     method setDlgHeight()
 
@@ -106,6 +109,7 @@ method new(cTitle, nWidth, nHeight, aHeader, aData, lEnchoiceBar) class JDialogB
     If !Empty(aHeader) .AND. !Empty(aData)
         self:setHeader(aHeader)
         self:setData(aData)
+        self:dataInitial := self:getData()
     EndIf
 
 return()
@@ -302,6 +306,7 @@ method setFromSQL(cSQL) class JDialogBrowse
 
     self:setHeader(aHeader)
     self:setData(aData)
+    self:dataInitial := self:getData()
 
 return()
 
@@ -345,9 +350,37 @@ method sortColumn(oBrowse, nColumn) class JDialogBrowse
 
     self:setData(self:oBrowse:aArray)
 
-    self:refrerefreshBrowse()
+    self:refreshBrowse()
 
 return()
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} setDbClick
+@description Code block to be executed when left clicked twice.
+@type method
+@author Julian de Almeida Santos
+@since 13/02/2020
+/*/
+//-------------------------------------------------------------------
+method setDbClick(bCodeBlock) class JDialogBrowse
+
+    // Variables.
+    default bCodeBlock := self:oBrowse:bLDblClick
+
+    self:oBrowse:bLDblClick := bCodeBlock
+
+return()
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} getColumn
+@description Get selected row position.
+@type method
+@author Julian de Almeida Santos
+@since 13/03/2020
+/*/
+//-------------------------------------------------------------------
+method getRow() class JDialogBrowse
+return(self:oBrowse:nAt)
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} getColumn
@@ -359,6 +392,29 @@ return()
 //-------------------------------------------------------------------
 method getColumn() class JDialogBrowse
 return(self:oBrowse:ColPos())
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} getValue
+@description Returns value of the informed position.
+@type method
+@author Julian de Almeida Santos
+@since 13/03/2020
+/*/
+//-------------------------------------------------------------------
+method getValue(nRow, nColumn) class JDialogBrowse
+return(self:getData()[nRow,nColumn])
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} setValue
+@description set value of the informed position.
+@type method
+@author Julian de Almeida Santos
+@since 13/03/2020
+/*/
+//-------------------------------------------------------------------
+method setValue(nRow, nColumn, xValue) class JDialogBrowse
+    self:getData()[nRow,nColumn] := xValue
+return()
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} getColSize
@@ -603,7 +659,7 @@ method filterInColumn(nColumn) class JDialogBrowse
     If Len(self:dataFilter) > 0
         self:setData(self:dataFilter)
     Else
-        self:setData(self:dataFilter)
+        self:setData(self:dataInitial)
         self:dataFilter  := {}
     EndIf
 
@@ -728,7 +784,7 @@ return(self:oBrowse:aHeaders)
 /*/
 //-------------------------------------------------------------------
 method getData() class JDialogBrowse
-return(self:oBrowse:aArray)
+return(@self:oBrowse:aArray)
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} getMenu()

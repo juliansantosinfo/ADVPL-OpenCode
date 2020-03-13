@@ -77,6 +77,7 @@ Static Function Sample01()
     oJDialogBrowse:setHeader(aHeader)
     oJDialogBrowse:setData(aCols)
     oJDialogBrowse:setSortHeader(.T.)
+    oJDialogBrowse:setDbClick({|| changeCheckBox()})
     oJDialogBrowse:show()
 
     // Instantiate JDialogBrowse object #4
@@ -86,5 +87,26 @@ Static Function Sample01()
     oJDialogBrowse:setSortHeader(.T.)
     oJDialogBrowse:addMenuDefault()
     oJDialogBrowse:show()
+
+Return()
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} changeCheckBox
+@description Changes checkbox state.
+@type static function
+@author Julian de Almeida Santos
+@since 13/03/2020
+/*/
+//-------------------------------------------------------------------
+Static Function changeCheckBox()
+
+    // Variables.
+    local   nRow    := oJDialogBrowse:getRow()
+    local   nColumn := oJDialogBrowse:getColumn()
+    private xValue  := oJDialogBrowse:getValue(nRow, nColumn)
+
+    If ValType(xValue) == "L"
+       oJDialogBrowse:setValue(nRow, nColumn, !xValue)
+    EndIf
 
 Return()
