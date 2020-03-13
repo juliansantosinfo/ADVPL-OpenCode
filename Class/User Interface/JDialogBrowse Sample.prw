@@ -43,6 +43,7 @@ Static Function Sample01()
     local   lEnchoiceBar:= .F.
 
     // Define aHeader.
+    aHeader := {}
     AADD(aHeader, "COLUMN 1")
     AADD(aHeader, "COLUMN 2")
     AADD(aHeader, "COLUMN 3")
@@ -51,6 +52,7 @@ Static Function Sample01()
     AADD(aHeader, "COLUMN 6")
 
     // Define aCols.
+    aCols := {}
     AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 9.36})
     AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 9.36})
     AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 8.36})

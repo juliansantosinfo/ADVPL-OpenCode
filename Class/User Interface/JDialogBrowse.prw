@@ -176,7 +176,7 @@ method setAlias(cAlias) class JDialogBrowse
 return()
 
 //-------------------------------------------------------------------
-/*/{Protheus.doc} setHeader
+/*/{Protheus.doc} setHeader()
 @description Set Header to Browse.
 @type method
 @author Julian de ALmeida Santos
@@ -184,10 +184,12 @@ return()
 /*/
 //-------------------------------------------------------------------
 method setHeader(aHeader) class JDialogBrowse
+    
+    // Variables.
+    default aHeader := self:oBrowse:aHeader
 
-    // Add column to Browse.
     self:oBrowse:aHeaders := aHeader
-
+    
 return()
 
 //-------------------------------------------------------------------
@@ -570,19 +572,6 @@ return(self:oBrowse)
 //-------------------------------------------------------------------
 method getHeader() class JDialogBrowse
 return(self:oBrowse:aHeader)
-
-//-------------------------------------------------------------------
-/*/{Protheus.doc} setHeader()
-@description set array with header from the Browse.
-@type method
-@author Julian de ALmeida Santos
-@since 12/03/2020
-/*/
-//-------------------------------------------------------------------
-method setHeader(aHeader) class JDialogBrowse
-    default aHeader := self:oBrowse:aHeader
-    self:oBrowse:aHeader := aHeader
-return()
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} getData()
