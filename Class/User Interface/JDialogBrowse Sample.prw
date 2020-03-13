@@ -39,7 +39,6 @@ Static Function Sample01()
     local   aHeader     := Nil
     local   aColumnSize := Nil
     local   aCols       := Nil
-    local   cAlias      := Nil
     local   lEnchoiceBar:= .F.
 
     // Define aHeader.
@@ -50,26 +49,27 @@ Static Function Sample01()
     AADD(aHeader, "COLUMN 4")
     AADD(aHeader, "COLUMN 5")
     AADD(aHeader, "COLUMN 6")
+    AADD(aHeader, "COLUMN 7")
 
     // Define aCols.
     aCols := {}
-    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 9.36})
-    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 9.36})
-    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 8.36})
-    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 7.36})
-    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 6.36})
-    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 5.36})
-    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 4.36})
-    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 3.36})
-    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 2.36})
-    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 1.36})
+    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 9.36, .F.})
+    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 9.36, .F.})
+    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 8.36, .F.})
+    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 7.36, .F.})
+    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 6.36, .F.})
+    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 5.36, .F.})
+    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 4.36, .F.})
+    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 3.36, .F.})
+    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 2.36, .F.})
+    AADD(aCols, {.T., "Text 1", "Text 2", "Text 3", Date(), 1.36, .F.})
 
     // Instantiate JDialogBrowse object #1
     oJDialogBrowse := JDialogBrowse():new(cTitle, nWidth, nHeight)
     oJDialogBrowse:show()
 
     // Instantiate JDialogBrowse object #2
-    oJDialogBrowse := JDialogBrowse():new(cTitle, nWidth, nHeight, aHeader, aCols, cAlias, lEnchoiceBar)
+    oJDialogBrowse := JDialogBrowse():new(cTitle, nWidth, nHeight, aHeader, aCols, lEnchoiceBar)
     oJDialogBrowse:show()
 
     // Instantiate JDialogBrowse object #3
@@ -80,14 +80,11 @@ Static Function Sample01()
     oJDialogBrowse:show()
 
     // Instantiate JDialogBrowse object #4
-    cSQL := "SELECT * FROM Z54010 "
+    cSQL := "SELECT * FROM SA1010 WHERE ROWNUM <= 100 "
     oJDialogBrowse := JDialogBrowse():new(cTitle, nWidth, nHeight)
     oJDialogBrowse:setFromSQL(cSQL)
     oJDialogBrowse:setSortHeader(.T.)
-    oJDialogBrowse:show()
-
-    // Instantiate JDialogBrowse object #5
-    oJDialogBrowse := JDialogBrowse():new(cTitle, nWidth, nHeight, aHeaderAlias, aColumnSize, cAlias)
+    oJDialogBrowse:addMenuDefault()
     oJDialogBrowse:show()
 
 Return()

@@ -25,10 +25,8 @@ Class JDialogBrowse
     method setFromSQL()
 
     method getDialog()
-    method getDlgTile()
-    method getDlgWidth()
-    method getDlgHeight()
     method getBrowse()
+    method getMenu()
 
     method setAlias()
     method setHeader()
@@ -39,21 +37,36 @@ Class JDialogBrowse
     method setSortHeader()
     method sortColumn()
 
-    method getColumnSize()
-    method setColumnSize()
+    method getColumn()
+    method getColSize()
+    method setColSize()
 
+    method addMenuDefault()
     method addContextMenu()
     method removeContextMenu()
 
-    method GoLine()
-    method GoColumn()
+    method refreshBrowse()
+    method goLine()
+    method goColumn()
 
+    method findInColumn()
+    method filterInColumn()
+
+    method getDlgTile()
     method setDlgTile()
+
+    method getDlgWidth()
     method setDlgWidth()
+
+    method getDlgHeight()
     method setDlgHeight()
 
-    data oDialog    as Object
-    data oBrowse    as Object
+    data oDialog        as Object
+    data oBrowse        as Object
+    data oMenu          as Object
+
+    data dataInitial    as Array
+    data dataFilter     as Array
 
 EndClass
 
@@ -65,7 +78,7 @@ EndClass
 @since 12/03/2020
 /*/
 //-------------------------------------------------------------------
-method new(cTitle, nWidth, nHeight, aHeader, aData, cAlias, lEnchoiceBar) class JDialogBrowse
+method new(cTitle, nWidth, nHeight, aHeader, aData, lEnchoiceBar) class JDialogBrowse
 
     // Variables.
     local   aBrowsePosition := {}
@@ -78,7 +91,6 @@ method new(cTitle, nWidth, nHeight, aHeader, aData, cAlias, lEnchoiceBar) class 
     default nHeight         := 480
     default aHeader         := {}
     default aData           := {}
-    default cAlias          := ""
     default lEnchoiceBar    := .F.
 
     self:oDialog := JDialog():New(cTitle, nWidth, nHeight)
@@ -89,9 +101,9 @@ method new(cTitle, nWidth, nHeight, aHeader, aData, cAlias, lEnchoiceBar) class 
     nBrwWidth := aBrowsePosition[1,3]
     nBrwHeight:= aBrowsePosition[1,4]
 
-    self:oBrowse := TCBrowse():New(nBrwRow, nBrwCol, nBrwWidth, nBrwHeight, , , , self:oDialog, , , , , , , , , , , , , cAlias, .T., , , , .T., .T. )
+    self:oBrowse := TCBrowse():New(nBrwRow, nBrwCol, nBrwWidth, nBrwHeight, , , , self:oDialog, , , , , , , , , , , , , , .T., , , , .T., .T. )
 
-    If Empty(cAlias) .AND. !Empty(aHeader) .AND. !Empty(aData)
+    If !Empty(aHeader) .AND. !Empty(aData)
         self:setHeader(aHeader)
         self:setData(aData)
     EndIf
@@ -164,18 +176,6 @@ method getBrowseSize(nWidth, nHeight, lEnchoiceBar) class JDialogBrowse
 return(aBrowsePosition)
 
 //-------------------------------------------------------------------
-/*/{Protheus.doc} setAlias
-@description Set Table to Browse.
-@type method
-@author Julian de ALmeida Santos
-@since 12/03/2020
-/*/
-//-------------------------------------------------------------------
-method setAlias(cAlias) class JDialogBrowse
-    self:oBrowse:cAlias := cAlias
-return()
-
-//-------------------------------------------------------------------
 /*/{Protheus.doc} setHeader()
 @description Set Header to Browse.
 @type method
@@ -184,12 +184,12 @@ return()
 /*/
 //-------------------------------------------------------------------
 method setHeader(aHeader) class JDialogBrowse
-    
+
     // Variables.
     default aHeader := self:oBrowse:aHeader
 
     self:oBrowse:aHeaders := aHeader
-    
+
 return()
 
 //-------------------------------------------------------------------
@@ -213,7 +213,7 @@ method setData(aData, bLine) class JDialogBrowse
     // Define array to Browse.
     self:oBrowse:SetArray(aData)
 
-    // Verifica se foi informado a propriedade BLine.
+    // Checks if BLine property has been informed.
     // If not informed, set up a standard code block.
     If bLine == Nil
 
@@ -252,7 +252,7 @@ return()
 //-------------------------------------------------------------------
 /*/{Protheus.doc} setSortHeader
 @description Defines Browse data from SQL.
-@type 06/03/2020
+@type method
 @author Julian de Almeida Santos
 @since 12/03/2020
 /*/
@@ -278,7 +278,7 @@ method setFromSQL(cSQL) class JDialogBrowse
     For nH := 1 To Len(aStruct)
 
         cColName := aStruct[nH,1]
-        
+
         AADD(aHeader, cColName)
 
     Next
@@ -308,7 +308,7 @@ return()
 //-------------------------------------------------------------------
 /*/{Protheus.doc} setSortHeader
 @description Defines whether the click on the column header orders it.
-@type 06/03/2020
+@type method
 @author Julian de Almeida Santos
 @since 12/03/2020
 /*/
@@ -330,7 +330,7 @@ return()
 //-------------------------------------------------------------------
 /*/{Protheus.doc} sortColumn
 @description Sorts informed column.
-@type 06/03/2020
+@type method
 @author Julian de Almeida Santos
 @since 12/03/2020
 /*/
@@ -345,30 +345,41 @@ method sortColumn(oBrowse, nColumn) class JDialogBrowse
 
     self:setData(self:oBrowse:aArray)
 
-    self:oBrowse:Refresh()
+    self:refrerefreshBrowse()
 
 return()
 
 //-------------------------------------------------------------------
-/*/{Protheus.doc} getColumnSize
+/*/{Protheus.doc} getColumn
+@description Get selected column position.
+@type method
+@author Julian de Almeida Santos
+@since 13/03/2020
+/*/
+//-------------------------------------------------------------------
+method getColumn() class JDialogBrowse
+return(self:oBrowse:ColPos())
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} getColSize
 @description Get columns size.
-@type 06/03/2020
+@type method
 @author Julian de Almeida Santos
 @since 12/03/2020
 /*/
 //-------------------------------------------------------------------
-method getColumnSize() class JDialogBrowse
+method getColSize() class JDialogBrowse
 return(self:oBrowse:GetColSizes())
 
 //-------------------------------------------------------------------
-/*/{Protheus.doc} setColumnSize
+/*/{Protheus.doc} setColSize
 @description Set columns size.
-@type 06/03/2020
+@type method
 @author Julian de Almeida Santos
 @since 12/03/2020
 /*/
 //-------------------------------------------------------------------
-method setColumnSize(aColumnSize) class JDialogBrowse
+method setColSize(aColumnSize) class JDialogBrowse
 
     // Variables.
     default aColumnSize := self:oBrowse:aColSizes
@@ -378,9 +389,29 @@ method setColumnSize(aColumnSize) class JDialogBrowse
 return()
 
 //-------------------------------------------------------------------
+/*/{Protheus.doc} addMenuDefault
+@description Adds default menu to browse.
+@type method
+@author Julian de Almeida Santos
+@since 13/03/2020
+/*/
+//-------------------------------------------------------------------
+method addMenuDefault() class JDialogBrowse
+
+    // Variables.
+    local   aMenuItens  := {}
+
+    AADD(aMenuItens, {"Find in Column"  , {|| self:findInColumn()  }, })
+    AADD(aMenuItens, {"Filter in Column", {|| self:filterInColumn()}, })
+
+    self:addContextMenu(aMenuItens)
+
+return()
+
+//-------------------------------------------------------------------
 /*/{Protheus.doc} addContextMenu
 @description Adds context menu to the grid.
-@type 06/03/2020
+@type method
 @author Julian de Almeida Santos
 @since 12/03/2020
 /*/
@@ -415,14 +446,14 @@ method addContextMenu(aMenuItens) class JDialogBrowse
     Next
 
     // Adds context menu to the grid.
-    self:oGrid:setPopup(self:oMenu)
+    self:oBrowse:setPopup(self:oMenu)
 
 return()
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} removeContextMenu
 @description Removes context menu from the grid.
-@type 06/03/2020
+@type method
 @author Julian de Almeida Santos
 @since 12/03/2020
 /*/
@@ -432,16 +463,29 @@ method removeContextMenu() class JDialogBrowse
 return()
 
 //-------------------------------------------------------------------
-/*/{Protheus.doc} GoLine
-@description 
-@type 06/03/2020
+/*/{Protheus.doc} refreshBrowse
+@description Updates browse.
+@type method
 @author Julian de Almeida Santos
 @since 12/03/2020
 /*/
 //-------------------------------------------------------------------
-method GoLine(nLine) class JDialogBrowse
-    
-    // Variables 
+method refreshBrowse() class JDialogBrowse
+    self:oBrowse:DrawSelect()
+    self:oBrowse:Refresh()
+return()
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} goLine
+@description 
+@type method
+@author Julian de Almeida Santos
+@since 12/03/2020
+/*/
+//-------------------------------------------------------------------
+method goLine(nLine) class JDialogBrowse
+
+    // Variables
     default nLine := 1
 
     self:oBrowse:GoPosition( nLine )
@@ -449,21 +493,123 @@ method GoLine(nLine) class JDialogBrowse
 return()
 
 //-------------------------------------------------------------------
-/*/{Protheus.doc} GoColumn
+/*/{Protheus.doc} goColumn
 @description 
-@type 06/03/2020
+@type method
 @author Julian de Almeida Santos
 @since 12/03/2020
 /*/
 //-------------------------------------------------------------------
-method GoColumn(nColumn) class JDialogBrowse
+method goColumn(nColumn) class JDialogBrowse
 
-    // Variables 
+    // Variables
     default nColumn := 1
 
     self:oGrid:SetSelectionMode(nColumn)
 
 return()
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} SearchGrid
+@description Search term in the selected column.
+@type method
+@author Julian de Almeida Santos
+@since 27/02/2020
+/*/
+//-------------------------------------------------------------------
+method findInColumn(nColumn) class JDialogBrowse
+
+    // Variables.
+    local   lFound   := .F.
+    local   nL       := 0
+    local   cColName := ""
+    local   xValue   := ""
+    local   xCurrent := ""
+    default nColumn  := self:getColumn()
+
+    cColName := self:getHeader()[nColumn]
+    xValue := FWInputBox("Search term in column " + cColName + "!", "")
+
+    // Go through aCols comparing content searched with column value.
+    For nL := 1 To Len(self:getData())
+
+        // Defines the value of the current position in the acols.
+        xCurrent := self:getData()[nL,nColumn]
+
+        // Converts content to string, if not.
+        If ValType(xCurrent) == "N"
+            xCurrent := AllTrim(Str(xCurrent))
+        ElseIf ValType(xCurrent) == "D"
+            xCurrent := AllTrim(DTOC(xCurrent))
+        ElseIf ValType(xCurrent) == "L"
+            xCurrent := IIf(xCurrent, ".T.", ".F.")
+        EndIf
+
+        // Compare content sought with content of the current position of the acols.
+        If AllTrim(xValue) $ xCurrent
+            lFound := .T.
+            self:GoLine(nL)
+            EXIT
+        EndIf
+
+    Next
+
+Return()
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} SearchGrid
+@description Filters record with the given term.
+@type method
+@author Julian de Almeida Santos
+@since 27/02/2020
+/*/
+//-------------------------------------------------------------------
+method filterInColumn(nColumn) class JDialogBrowse
+
+    // Variables.
+    local   nL       := 0
+    local   cColName := ""
+    local   xValue   := ""
+    local   xCurrent := ""
+    default nColumn  := self:getColumn()
+
+    self:dataFilter := {}
+
+    cColName := self:getHeader()[nColumn]
+    xValue := FWInputBox("Filters term in column " + cColName + "!", "")
+
+    // Go through aCols comparing content searched with column value.
+    For nL := 1 To Len(self:getData())
+
+        // Defines the value of the current position in the acols.
+        xCurrent := self:getData()[nL,nColumn]
+
+        // Converts content to string, if not.
+        If ValType(xCurrent) == "N"
+            xCurrent := AllTrim(Str(xCurrent))
+        ElseIf ValType(xCurrent) == "D"
+            xCurrent := AllTrim(DTOC(xCurrent))
+        ElseIf ValType(xCurrent) == "L"
+            xCurrent := IIf(xCurrent, ".T.", ".F.")
+        EndIf
+
+        // Compare content sought with content of the current position of the acols.
+        If AllTrim(xValue) $ xCurrent
+            AADD(self:dataFilter, self:getData()[nL])
+        EndIf
+
+    Next
+
+    If Len(self:dataFilter) > 0
+        self:setData(self:dataFilter)
+    Else
+        self:setData(self:dataFilter)
+        self:dataFilter  := {}
+    EndIf
+
+    self:refreshBrowse()
+
+Return()
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} getDialog
@@ -571,7 +717,7 @@ return(self:oBrowse)
 /*/
 //-------------------------------------------------------------------
 method getHeader() class JDialogBrowse
-return(self:oBrowse:aHeader)
+return(self:oBrowse:aHeaders)
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} getData()
@@ -583,3 +729,14 @@ return(self:oBrowse:aHeader)
 //-------------------------------------------------------------------
 method getData() class JDialogBrowse
 return(self:oBrowse:aArray)
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} getMenu()
+@description Returns TMenu object.
+@type method
+@author Julian de ALmeida Santos
+@since 12/03/2020
+/*/
+//-------------------------------------------------------------------
+method getMenu() class JDialogBrowse
+return(self:oMenu)
