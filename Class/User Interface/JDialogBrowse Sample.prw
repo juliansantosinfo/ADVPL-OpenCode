@@ -88,6 +88,16 @@ Static Function Sample01()
     oJDialogBrowse:addMenuDefault()
     oJDialogBrowse:show()
 
+    // Instantiate JDialogBrowse object #5
+    cSQL := "SELECT * FROM SA1010 WHERE ROWNUM <= 100 "
+    oJDialogBrowse := JDialogBrowse():new(cTitle, nWidth, nHeight)
+    oJDialogBrowse:setFromSQL(cSQL)
+    oJDialogBrowse:setSortHeader(.T.)
+    oJDialogBrowse:addMenuDefault()
+    oJDialogBrowse:addColCheck()
+    oJDialogBrowse:setDbClick({|| changeCheckBox()})
+    oJDialogBrowse:show()
+
 Return()
 
 //-------------------------------------------------------------------

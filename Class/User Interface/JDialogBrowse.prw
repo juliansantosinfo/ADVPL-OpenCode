@@ -38,6 +38,8 @@ Class JDialogBrowse
 
     method setDbClick()
 
+    method addColCheck()
+
     method getRow()
     method getColumn()
     method getValue()
@@ -368,6 +370,34 @@ method setDbClick(bCodeBlock) class JDialogBrowse
     default bCodeBlock := self:oBrowse:bLDblClick
 
     self:oBrowse:bLDblClick := bCodeBlock
+
+return()
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} setDbClick
+@description Add one column in browser and set to check and uncheck..
+@type method
+@author Julian de Almeida Santos
+@since 13/02/2020
+/*/
+//-------------------------------------------------------------------
+method addColCheck() class JDialogBrowse
+
+    // Set new Header.
+    nArraySize := (Len(self:getHeader()) + 1)
+    ASize(self:getHeader(), nArraySize)
+    AIns(self:getHeader(), 1)
+    self:getHeader()[1] := "  "
+
+
+    // Set new Data.
+    For nR := 1 To Len(self:getData())
+        ASize(self:getData()[nR], (Len(self:getData()[nR]) + 1) )
+        AIns(self:getData()[nR], 1)
+        self:setValue(nR, 1, .F.)
+    Next
+
+    self:setData(self:getData())
 
 return()
 
@@ -773,7 +803,7 @@ return(self:oBrowse)
 /*/
 //-------------------------------------------------------------------
 method getHeader() class JDialogBrowse
-return(self:oBrowse:aHeaders)
+return(@self:oBrowse:aHeaders)
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} getData()
