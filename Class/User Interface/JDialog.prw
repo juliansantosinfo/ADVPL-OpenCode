@@ -18,7 +18,7 @@ Class JDialog From TDialog
     
     method setSize()
     method setTitle()
-    method setEnchoiceBar()
+    method addEnchoiceBar()
 
     method setLeftClick()
     method setRightClick()
@@ -126,14 +126,14 @@ method setTitle(cTitle) class JDialog
 return()
 
 //-------------------------------------------------------------------
-/*/{Protheus.doc} setEnchoiceBar
+/*/{Protheus.doc} addEnchoiceBar
 @description Define enchoicebarbar to JDialog.
 @type method
 @author Julian de Almeida Santos
 @since 03/03/2020
 /*/
 //-------------------------------------------------------------------
-method setEnchoiceBar(bFinish, bCancel, aButtons, lStandard, lHasOk, lPrintReg, lWalkThru, lMashups, lMsgDel, nRecno, cAliasRec, cProfileID) class JDialog
+method addEnchoiceBar(bFinish, bCancel, aButtons, lStandard, lHasOk, lPrintReg, lWalkThru, lMashups, lMsgDel, nRecno, cAliasRec, cProfileID) class JDialog
 
     // Variables.
     default bFinish     := {|| self:End()}  // Code block to be executed in the Ok button.

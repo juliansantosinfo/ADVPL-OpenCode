@@ -61,7 +61,7 @@ Static Function Sample02()
 
     // Instantiate JDialog object
     oJDialog  := JDialog():New (cTitle, nWidth, nHeight)    // Initialize object JDialog.
-    oJDialog:setEnchoiceBar()                               // Add EnchoiceBar.
+    oJDialog:addEnchoiceBar()                               // Add EnchoiceBar.
     oJDialog:show()                                         // Show JDialog.
 
 Return()
