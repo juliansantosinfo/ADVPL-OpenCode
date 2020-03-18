@@ -3,6 +3,9 @@
 #include 'totvs.ch'
 #include 'tbiconn.ch'
 
+static  oBmpOk := LoadBitmap( GetResources(), "LBOK")
+static  oBmpNo := LoadBitmap( GetResources(), "LBNO")
+
 //-------------------------------------------------------------------
 /*/{Protheus.doc} xJDlgGetDados
 @description Sample for class JDialogGetDados
@@ -12,6 +15,8 @@
 /*/
 //-------------------------------------------------------------------
 User Function xJDlgGetDados()
+
+    RpcSetEnv('01', '01')
 
     // Sample to JDialogGetDados class without EnchoiceBar.
     Sample01()
@@ -37,8 +42,37 @@ Static Function Sample01()
     local   aCols       := Nil
     local   lEnchoiceBar:= .F.
 
+    // Define aHeader.
+    aHeader := {}
+    AADD(aHeader, {"COLUMN 1", "COL1", "@BMP"         , 02, 00, ".T.", "", "C"})
+    AADD(aHeader, {"COLUMN 2", "COL2", "@!"           , 20, 00, ".T.", "", "C"})
+    AADD(aHeader, {"COLUMN 3", "COL3", "9999999.99"   , 10, 02, ".T.", "", "N"})
+    AADD(aHeader, {"COLUMN 4", "COL4", ""             , 08, 00, ".T.", "", "D"})
+
+    // Define aCols.
+    aCols := {}
+    AADD(aCols, {oBmpOk, "COLUMN CARACTER", 4, Date(), .F.})
+    AADD(aCols, {oBmpNo, "COLUMN CARACTER", 3, Date(), .F.})
+    AADD(aCols, {oBmpOk, "COLUMN CARACTER", 2, Date(), .F.})
+    AADD(aCols, {oBmpNo, "COLUMN CARACTER", 1, Date(), .F.})
+
     // Instantiate JDialogGetDados object #1
+    oJDialogGetDados := JDialogGetDados():new(cTitle, nWidth, nHeight, aHeader, aCols, lEnchoiceBar)
+    oJDialogGetDados:show()             // Show dialog.
+
+    // Instantiate JDialogGetDados object #2
     oJDialogGetDados := JDialogGetDados():new(cTitle, nWidth, nHeight)
-    oJDialogGetDados:show()
+    oJDialogGetDados:setHeader(aHeader) // set header to msgetdados.
+    oJDialogGetDados:setData(aCols)     // Set data to msgetdados.
+    oJDialogGetDados:show()             // Show dialog.
+
+    // Instantiate JDialogGetDados object #3
+    oJDialogGetDados := JDialogGetDados():new(cTitle, nWidth, nHeight)
+    oJDialogGetDados:setHeader(aHeader) // set header to msgetdados.
+    oJDialogGetDados:setData(aCols)     // Set data to msgetdados.
+    oJDialogGetDados:setInsertLine(.F.) // Disables line insertion.
+    oJDialogGetDados:setDeleteLine(.F.) // Disable line deletion.
+    oJDialogGetDados:setEditLine(.F.)   // Disable line editing.
+    oJDialogGetDados:show()             // Show dialog.
 
 Return()
