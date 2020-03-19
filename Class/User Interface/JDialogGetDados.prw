@@ -112,8 +112,6 @@ method createGrid() class JDialogGetDados
     If Empty(self:aHeader)
         return()
     EndIf
-    
-    aAlter := {"COL1","COL2","COL3","COL4"}
 
     aGridPosition := self:getGridSize(self:nWidth, self:nHeight, self:lEnchoiceBar)
     nGridRow      := aGridPosition[1,1]
@@ -228,10 +226,17 @@ method setData(aData) class JDialogGetDados
 
     self:aData := aData
     self:oGrid:setArray(self:aData, .T.)
-    self:oGrid:Refresh()
 
 return()
 
+//-------------------------------------------------------------------
+/*/{Protheus.doc} setFromSQL
+@description 
+@type method
+@author Julian de ALmeida Santos
+@since 18/03/2020
+/*/
+//-------------------------------------------------------------------
 method setFromSQL(cSQL) class JDialogGetDados
 
     // Variables.
@@ -262,7 +267,7 @@ method setFromSQL(cSQL) class JDialogGetDados
         nColSize := aStruct[nH,3]
         nColDec  := aStruct[nH,4]
 
-        AADD(aHeader, cColName)
+        AADD(aHeader, {cColName, cColName, "", nColSize, nColDec, ".T.", "", cColTipo})
 
     Next
 
@@ -276,6 +281,8 @@ method setFromSQL(cSQL) class JDialogGetDados
             AADD(aRow, (cAliasSQL)->&(aStruct[nX,01]))
         Next
 
+        AADD(aRow, .F.)
+
         // Add item atual ao array de itens geral.
         AADD(aData, aRow)
 
@@ -285,7 +292,6 @@ method setFromSQL(cSQL) class JDialogGetDados
 
     self:setHeader(aHeader)
     self:setData(aData)
-    self:dataInitial := self:getData()
 
 return()
 

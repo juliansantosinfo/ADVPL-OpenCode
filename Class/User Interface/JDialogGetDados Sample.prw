@@ -75,4 +75,10 @@ Static Function Sample01()
     oJDialogGetDados:setEditLine(.F.)   // Disable line editing.
     oJDialogGetDados:show()             // Show dialog.
 
+    // Instantiate JDialogGetDados object #4
+    cSQL := "SELECT * FROM SA1010 WHERE ROWNUM <= 100 "
+    oJDialogGetDados := JDialogGetDados():new(cTitle, nWidth, nHeight, aHeader, aCols, lEnchoiceBar)
+    oJDialogGetDados:setFromSQL(cSQL)   // Create grid with data from SQL.
+    oJDialogGetDados:show()             // Show dialog.
+
 Return()
