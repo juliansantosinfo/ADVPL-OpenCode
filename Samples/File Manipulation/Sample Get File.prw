@@ -30,14 +30,15 @@ Return()
 //-------------------------------------------------------------------
 Static Function Sample01()
 
-    local   cMask       := "Arquivos TXT|*.txt|Arquivos CSV|*.csv|Arquivos PRW|*.prw"
+    local   cMask       := "Todos|*.*|Arquivos TXT|*.txt|Arquivos CSV|*.csv|Arquivos PRW|*.prw"
     local   cTitle      := "Selecione um Arquivo TXT"
     local   cMaskDefault:= 0
     local   cDirinicial := "/"
     local   lSave       := .F.
-    local   nOptions     := GETF_LOCALFLOPPY + GETF_LOCALHARD + GETF_NETWORKDRIVE
+    local   nOptions    := GETF_LOCALFLOPPY + GETF_LOCALHARD + GETF_NETWORKDRIVE
     local   lShowServer := .T.
     local   lKeepCase   := .T.
+
     local   cSelected   := ""
 
     // GETF_MULTISELECT  = Permite selecionar mais de 1 arquivo no padrão "arquivo1 | arquivo2 | arquivo3" 
@@ -76,7 +77,8 @@ Static Function Sample01()
     // --------------
     // Save File
     // --------------
-    lSave := .F.
+    cTitle:= "Salvar um Arquivo TXT"
+    lSave := .T.
 
     cSelected:= cGetFile( cMask , cTitle, cMaskDefault, cDirinicial, lSave, nOptions, lShowServer, lKeepCase)
 
@@ -94,7 +96,7 @@ Return
 Static Function Sample02()
 
     local   cMask       := "Arquivos TXT|*.txt|Arquivos CSV|*.csv|Arquivos PRW|*.prw"
-    local   cTitle      := "Selecione um Arquivo TXT"
+    local   cTitle      := "Selecione um Diretorio TXT"
     local   cMaskDefault:= 0
     local   cDirinicial := "/"
     local   lSave       := .F.
@@ -123,7 +125,8 @@ Static Function Sample02()
     // --------------
     // Save File
     // --------------
-    lSave := .F.
+    cTitle:= "Salvar um Diretorio TXT"
+    lSave := .T.
 
     cSelected:= cGetFile( cMask , cTitle, cMaskDefault, cDirinicial, lSave, nOptions, lShowServer, lKeepCase)
 
