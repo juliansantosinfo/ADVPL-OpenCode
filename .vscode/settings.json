@@ -1,0 +1,9 @@
+{
+    // Files
+    "files.encoding": "windows1252",
+
+    // TOTVS
+    "totvsLanguageServer.welcomePage": false,
+    "totvsLanguageServer.askEncodingChange": false,
+    "totvsLanguageServer.askCompileResult": true
+}
