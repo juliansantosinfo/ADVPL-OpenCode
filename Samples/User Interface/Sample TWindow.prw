@@ -116,7 +116,7 @@ Return()
 @since 03/03/2020
 /*/
 //-------------------------------------------------------------------
-Static Function Sample02()
+Static Function Sample03()
 
     // Variables.
     local   oTWindow    := Nil
