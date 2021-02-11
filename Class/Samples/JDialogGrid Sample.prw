@@ -128,7 +128,7 @@ Static Function Sample02()
 
     // Instantiate JDialog object
     oJDialogGrid  := JDialogGrid():new(cTitle, nWidth, nHeight, aHeader, aCols, lEnchoiceBar)
-    oJDialogGrid:oDialog:setEnchoiceBar()
+    oJDialogGrid:oDialog:addEnchoiceBar()
     oJDialogGrid:show()
 
 Return()
@@ -178,8 +178,8 @@ Static Function Sample03()
 
     // Instantiate JDialog object
     oJDialogGrid  := JDialogGrid():new(cTitle, nWidth, nHeight, aHeader, aCols, lEnchoiceBar)
-    oJDialogGrid:oDialog:setEnchoiceBar()
-    oJDialogGrid:addContextMenu(aMenuItens)
+    oJDialogGrid:oDialog:addEnchoiceBar()
+    oJDialogGrid:addContextMenu()
     oJDialogGrid:show()
 
 Return()
