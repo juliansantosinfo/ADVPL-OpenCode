@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebService WSCLIENTES</title>
+    <link rel="stylesheet" href="./WSCLIENTES.css">
+</head>
+<body>
+    <header>
+        <h1>WebService WSCLIENTES</h1>
+    </header>
+    <section>
+        <h2 style="margin-bottom: 10px;">Configurações</h2>
+        <div class=divSettings>
+            <div style="margin: auto;">
+                <label for="ip">IP</label>
+                <input type="text" name="ip" id="ip">
+                <label for="port">Porta</label>
+                <input type="text" name="port" id="port">
+            </div>
+        </div>
+        <h2 style="margin-bottom: 10px;">Cadastro e Consulta</h2>
+        <form action="http://192.168.3.3:8080/rest/WSCLIENTES" method="post">
+            <div class=divConsulta>
+                <label for="busca">Pesquisa</label>
+                <input class="inputLarge" type="text" name="busca" id="busca">
+                <div class="divRadio">
+                    <input type="radio" id="rCodigo" name="tipoBusca" value="codigo" required>
+                    <label for="rCodigo">Código</label><br>
+                    <input type="radio" id="rCnpj" name="tipoBusca" value="cnpj" checked>
+                    <label for="rCnpj">CNPJ</label><br>
+                </div>
+            </div>
+            <button id="btnSearch" type="button">Consultar</button>
+            <div>
+                <fieldset>
+                    <label for="nome">Nome</label>
+                    <input class="inputLarge" type="text" name="nome" id="nome" required>
+                    <label for="razao">Razão Social</label>
+                    <input class="inputLarge" type="text" name="razao" id="razao" required>
+                    <label for="pessoa">Pessoa</label>
+                    <select name="pessoa" id="pessoa">
+                        <option value="J">Juridica</option>
+                        <option value="F">Fisica</option>
+                    </select>
+                    <label for="tipo">Tipo</label>
+                    <select name="tipo" id="tipo">
+                        <option value="F">Cliente Final</option>
+                        <option value="L">Produtor Rural</option>
+                        <option value="R">Revendedor</option>
+                        <option value="R">Solidario</option>
+                        <option value="R">Exportacao</option>
+                    </select>
+                    <label for="cnpj">CPF/CNPJ</label>
+                    <input class="inputLarge" type="text" name="cnpj" id="cnpj" required>
+                    <label for="ie">Inscricao</label>
+                    <input class="inputLarge" type="text" name="ie" id="ie" required>
+                    <label for="email">Email</label>
+                    <input class="inputLarge" type="text" name="email" id="email" required>
+                </fieldset>
+                <fieldset>
+                    <label for="cep">CEP</label>
+                    <input class="inputLarge" type="text" name="cep" id="cep" required>
+                    <label for="endereco">Endereço</label>
+                    <input class="inputLarge" type="text" name="endereco" id="endereco" required>
+                    <label for="bairro">Bairro</label>
+                    <input class="inputLarge" type="text" name="bairro" id="bairro" required>
+                    <label for="uf">UF</label>
+                    <input class="inputLarge" type="text" name="uf" id="uf" required>
+                    <label for="municipio">Municipio</label>
+                    <input class="inputLarge" type="text" name="municipio" id="municipio" required>
+                    <label for="ddd">DDD</label>
+                    <input class="inputLarge" type="text" name="ddd" id="ddd" required>
+                    <label for="telefone">Telefone</label>
+                    <input class="inputLarge" type="text" name="telefone" id="telefone" required>
+                </fieldset>
+            </div>
+            <button id="btnClear" type="reset">Limpar</button>
+            <button id="btnSubmit" type="submit" style="margin-top: 10px;">Cadastrar</button>
+            <p id="error" style="margin: auto; margin-top: 10px; color: red;"></p>
+            <p id="success" style="margin: auto; margin-top: 10px; color: green;"></p>
+        </form>
+    </section>
+</body>
+<script src="../vendors/jquery.js"></script>
+<script src="./WSCLIENTES.js"></script>
+</html>

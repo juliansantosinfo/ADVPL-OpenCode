@@ -1,0 +1,66 @@
+header {
+    display: flex;
+    justify-content: center;
+}
+
+section h2 {
+    width: 40%;
+    margin: auto;
+    text-align: center;
+}
+
+section form {
+    display: flex;
+    flex-direction: column;
+    width: 45%;
+    margin: auto;
+}
+
+ section form div{
+    display: flex;
+    flex-direction: row;
+}
+
+section form fieldset{
+    display: flex;
+    flex-direction: column;
+    border: none;
+    margin: auto;
+}
+
+.inputLarge {
+    height: 20px;
+    font-size: 16pt;
+    margin-bottom: 10px;
+}
+
+form select {
+    height: 30px;
+    font-size: 16pt;
+    margin-bottom: 10px;
+}
+
+button {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 60%;
+    margin: auto;
+}
+
+.divSettings {
+    margin: auto; 
+    width: 40%; 
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.divConsulta {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    margin-bottom: 10px;
+}
+
+.divRadio {
+    margin: auto;
+}
