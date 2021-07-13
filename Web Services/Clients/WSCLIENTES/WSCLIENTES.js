@@ -1,4 +1,4 @@
-url = "http://{ip}:{port}/rest/WSCLIENTES"
+urlBase = "http://{ip}:{port}/rest/WSCLIENTES"
 
 $(document).ready(function () {
 });
@@ -30,8 +30,8 @@ $("#btnSearch").click(function (e) {
         $("#error").text("Preencha IP e Porta.");
     }
 
-    url = url.replace('{ip}', $("#ip").val())
-    url = url.replace('{port}', $("#port").val())
+    url = urlBase.replace('{ip}', $("#ip").val())
+    url = urlBase.replace('{port}', $("#port").val())
 
     // Set route.
     if ($("#rCodigo")[0].checked) {
@@ -98,8 +98,8 @@ $("form").submit(function (e) {
         $("#error").text("Preencha IP e Porta.");
     }
 
-    url = url.replace('{ip}', $("#ip").val())
-    url = url.replace('{port}', $("#port").val())
+    url = urlBase.replace('{ip}', $("#ip").val())
+    url = urlBase.replace('{port}', $("#port").val())
 
     data = {
         nome: $("#nome").val(),
