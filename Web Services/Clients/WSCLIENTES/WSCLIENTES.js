@@ -31,7 +31,7 @@ $("#btnSearch").click(function (e) {
     }
 
     url = urlBase.replace('{ip}', $("#ip").val())
-    url = urlBase.replace('{port}', $("#port").val())
+    url = url.replace('{port}', $("#port").val())
 
     // Set route.
     if ($("#rCodigo")[0].checked) {
@@ -99,7 +99,7 @@ $("form").submit(function (e) {
     }
 
     url = urlBase.replace('{ip}', $("#ip").val())
-    url = urlBase.replace('{port}', $("#port").val())
+    url = url.replace('{port}', $("#port").val())
 
     data = {
         nome: $("#nome").val(),
