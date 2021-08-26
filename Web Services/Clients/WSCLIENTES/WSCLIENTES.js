@@ -3,7 +3,7 @@ urlBase = "http://{ip}:{port}/rest/WSCLIENTES"
 $(document).ready(function () {
 });
 
-$("#btnClear").click(function (e) { 
+$("#btnClear").click(function (e) {
     $("#nome").removeAttr('readonly', true);
     $("#razao").removeAttr('readonly', true);
     $("#pessoa").removeAttr('readonly', true);
@@ -22,7 +22,7 @@ $("#btnClear").click(function (e) {
 
 $("#btnSearch").click(function (e) {
     e.preventDefault();
-    
+
     // Set url.
     if ($("#ip").val().length === 0 || $("#port").val().length === 0) {
         $("#success").hide();
@@ -40,12 +40,23 @@ $("#btnSearch").click(function (e) {
         urlRoute = "/cnpj/"
     }
 
+    username = $("#username").val()
+    password = $("#password").val()
+    authorization = username + ":" + password
+    authorization = "Basic " + btoa(authorization)
+
     // Get find value.
     cId = $("#busca").val()
-    
-    // Request data.
-    $.getJSON(url+urlRoute+cId)
-        .done(resp => {
+
+    $.ajax({
+        type: "GET",
+        url: url + urlRoute + cId,
+        dataType: 'json',
+        async: false,
+        headers: {
+            "Authorization": authorization
+        },
+        success: function (resp) {
             // Load data.
             $("#nome").val(resp.nome);
             $("#nome").attr('readonly', true);
@@ -79,13 +90,18 @@ $("#btnSearch").click(function (e) {
             $("#error").hide();
             $("#success").show();
             $("#success").text('Cliente localizado!');
-        })
-        .fail(resp => {
+        },
+        error: function (resp) {
             // Set msg.
             $("#success").hide();
             $("#error").show();
-            $("#error").text(resp.responseJSON.errorMessage);
-        });
+            if (resp.responseJSON.message) {
+                $("#error").text(resp.responseJSON.message);
+            } else if (resp.responseJSON.errorMessage) {
+                $("#error").text(resp.responseJSON.errorMessage);
+            }
+        }
+    });
 });
 
 $("form").submit(function (e) {
