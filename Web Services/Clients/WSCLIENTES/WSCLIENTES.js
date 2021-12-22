@@ -1,4 +1,4 @@
-urlBase = "http://{ip}:{port}/rest/WSCLIENTES"
+urlBase = "http://{ip}:{port}/rest"
 
 $(document).ready(function () {
 });
@@ -35,15 +35,22 @@ $("#btnSearch").click(function (e) {
 
     // Set route.
     if ($("#rCodigo")[0].checked) {
-        urlRoute = "/codigo/"
+        urlRoute = "/WSCLIENTES/codigo/"
     } else {
-        urlRoute = "/cnpj/"
+        urlRoute = "/WSCLIENTES/cnpj/"
     }
 
-    username = $("#username").val()
-    password = $("#password").val()
-    authorization = username + ":" + password
-    authorization = "Basic " + btoa(authorization)
+    token = $("#token").val()
+
+    if (token) {
+        authorization = token
+        authorization = "Bearer " + authorization
+    } else {
+        username = $("#username").val()
+        password = $("#password").val()
+        authorization = username + ":" + password
+        authorization = "Basic " + btoa(authorization)
+    }
 
     // Get find value.
     cId = $("#busca").val()
@@ -148,4 +155,54 @@ $("form").submit(function (e) {
         .always(() => {
         });
 
+});
+
+$("#btnGetToken").click(function (e) {
+    e.preventDefault();
+
+    // Set url.
+    if ($("#ip").val().length === 0 || $("#port").val().length === 0) {
+        $("#success").hide();
+        $("#error").show();
+        $("#error").text("Preencha IP e Porta.");
+    }
+
+    url = urlBase.replace('{ip}', $("#ip").val())
+    url = url.replace('{port}', $("#port").val())
+
+    username = $("#username").val()
+    password = $("#password").val()
+    authorization = username + ":" + password
+    authorization = "Basic " + btoa(authorization)
+
+    // Set route.
+    urlRoute = "/api/oauth2/v1/token?grant_type=password&password="+password+"&username="+username
+
+    $.ajax({
+        type: "POST",
+        url: url + urlRoute,
+        dataType: 'json',
+        async: false,
+        headers: {
+            "Authorization": authorization
+        },
+        success: function (resp) {
+            // Load data.
+            $("#token").val(resp.access_token);
+            // Set msg.
+            $("#error").hide();
+            $("#success").show();
+            $("#success").text('Token gerado com sucesso!');
+        },
+        error: function (resp) {
+            // Set msg.
+            $("#success").hide();
+            $("#error").show();
+            if (resp.responseJSON.message) {
+                $("#error").text(resp.responseJSON.message);
+            } else if (resp.responseJSON.errorMessage) {
+                $("#error").text(resp.responseJSON.errorMessage);
+            }
+        }
+    });
 });
