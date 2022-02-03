@@ -15,11 +15,13 @@ WSRESTFUL WSCLIENTES DESCRIPTION "WebService para consulta de clientes."
 
     WSMETHOD GET CNPJ; 
     DESCRIPTION "Retorna informacoes do cliente."; 
-    WSSYNTAX "/WSCLIENTES/CNPJ/{params}"
+    WSSYNTAX "/WSCLIENTES/CNPJ/{params}";
+    PATH "/CNPJ/{params}"
 
     WSMETHOD GET CODIGO; 
     DESCRIPTION "Retorna informacoes do cliente."; 
-    WSSYNTAX "/WSCLIENTES/CODIGO/{params}"
+    WSSYNTAX "/WSCLIENTES/CODIGO/{params}";
+    PATH "/CODIGO/{params}"
 
     WSMETHOD POST; 
     DESCRIPTION "Inseri cliente."; 
@@ -102,7 +104,7 @@ WSMETHOD GET CODIGO WSSERVICE WSCLIENTES
     
     // Valida codigo e loja
     if len(cId) != 8
-        SetRestFault(400, EncodeUTF8("Código e Loja é inváldo."))
+        SetRestFault(400, EncodeUTF8("Código e Loja é inváldo.22"))
         return .F.
     endif
 
