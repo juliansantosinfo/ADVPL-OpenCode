@@ -23,6 +23,7 @@ Class JDialogBrowse
 
     method getBrowseSize()
     method setFromSQL()
+    method setFromAlias()
 
     method getDialog()
     method getBrowse()
@@ -256,7 +257,7 @@ method setData(aData, bLine) class JDialogBrowse
 return()
 
 //-------------------------------------------------------------------
-/*/{Protheus.doc} setSortHeader
+/*/{Protheus.doc} setFromSQL
 @description Defines Browse data from SQL.
 @type method
 @author Julian de Almeida Santos
@@ -277,6 +278,64 @@ method setFromSQL(cSQL) class JDialogBrowse
     TCQUERY cSQL ALIAS &cAliasSQL NEW
 
     DBSelectArea(cAliasSQL)
+    DbGoTop()
+
+    aStruct := (cAliasSQL)->(DBStruct())
+
+    For nH := 1 To Len(aStruct)
+
+        cColName := aStruct[nH,1]
+
+        AADD(aHeader, cColName)
+
+    Next
+
+    While !(cAliasSQL)->(EOF())
+
+        // Inicializa array com informacoes da linha atual.
+        aRow := {}
+
+        For nX := 1 To Len(aStruct)
+            // Add coluna ao array do item atual.
+            AADD(aRow, (cAliasSQL)->&(aStruct[nX,01]))
+        Next
+
+        // Add item atual ao array de itens geral.
+        AADD(aData, aRow)
+
+        (cAliasSQL)->(DbSkip())
+
+    End
+
+    self:setHeader(aHeader)
+    self:setData(aData)
+    self:dataInitial := self:getData()
+
+return()
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} setFromAlias
+@description Defines Browse data from Alias.
+@type method
+@author Julian de Almeida Santos
+@since 12/03/2020
+/*/
+//-------------------------------------------------------------------
+method setFromAlias(cAliasSQL) class JDialogBrowse
+
+    // Variables.
+    local   aStruct     := {}
+    local   cColName    := ""
+    local   aHeader     := {}
+    local   aData       := {}
+    local   aRow        := {}
+    Default cAliasSQL   := ""
+
+    if empty(cAliasSQL)
+        Return()
+    endif
+
+    DBSelectArea(cAlias)
     DbGoTop()
 
     aStruct := (cAliasSQL)->(DBStruct())
