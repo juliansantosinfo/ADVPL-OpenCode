@@ -14,43 +14,32 @@
 User Function _FWDefSize()
 
 	Local oSize
+	Local lEnchoice := .T.
 
     // Calcula as dimensoes dos objetos                                         
-    oSize := FwDefSize():New(.T.) // Com enchoicebar
-	oSize:lLateral     := .F.       // Calculo vertical
+    oSize := FwDefSize():New(lEnchoice) // Com enchoicebar
 
-    // adiciona Enchoice                                                          
+    // adiciona Enchoice
 	oSize:AddObject( "ENCHOICE", 100, 60, .T., .T. ) // Adiciona enchoice
 
     // adiciona folder                                                           
-	oSize:AddObject( "FOLDER", 100, 100, .T., .T. ) // Adiciona Folder
+	oSize:AddObject( "GETDADOS", 100, 100, .T., .T. ) // Adiciona Folder
 
     // Dispara o calculo                                                     
 	oSize:Process()
+
+	// Retorna posicoes ENCHOICE
+	nLinIni := oSize:GetDimension("ENCHOICE","LININI")
+	nLinEnd := oSize:GetDimension("ENCHOICE","LINEND")
+	nColIni := oSize:GetDimension("ENCHOICE","COLINI")
+	nColEnd := oSize:GetDimension("ENCHOICE","COLEND")
+	Alert("ENCHOICE" + CRLF + "Linha inicial " + str(nLinIni) + CRLF + "Linha final " + str(nLinEnd) + CRLF + "Coluna inicial " + str(nColIni) + CRLF + "Coluna final " + str(nColEnd))
+
+	// Retorna posicoes GETDADOS
+	nLinIni := oSize:GetDimension("GETDADOS","LININI")
+	nLinEnd := oSize:GetDimension("GETDADOS","LINEND")
+	nColIni := oSize:GetDimension("GETDADOS","COLINI")
+	nColEnd := oSize:GetDimension("GETDADOS","COLEND")
+	Alert("GETDADOS" + CRLF + "Linha inicial " + str(nLinIni) + CRLF + "Linha final " + str(nLinEnd) + CRLF + "Coluna inicial " + str(nColIni) + CRLF + "Coluna final " + str(nColEnd))
     
-    // Desenha a dialog
-	DEFINE MSDIALOG oDlgEsp TITLE "TITULO" FROM oSize:aWindSize[1],oSize:aWindSize[2] TO oSize:aWindSize[3],oSize:aWindSize[4] PIXEL
-    
-    // Monta a Enchoice                                                         
-	oEnChoice := MsMGet():New( cAlias, nReg, nOpc,,,,,;
-	{oSize:GetDimension("ENCHOICE","LININI"),;
-	oSize:GetDimension("ENCHOICE","COLINI"),;
-	oSize:GetDimension("ENCHOICE","LINEND"),;
-	oSize:GetDimension("ENCHOICE","COLEND")};
-	, , 3, , , , , ,.T. )
-
-    // Monta o Objeto Folder                                                    
-	oFolder:=TFolder():New( oSize:GetDimension("FOLDER","LININI"),;
-	oSize:GetDimension("FOLDER","COLINI"),aTitles,aPages,oDlgEsp,,,,.T.,;
-	.T.,oSize:GetDimension("FOLDER","XSIZE"),;
-	oSize:GetDimension("FOLDER","YSIZE"))
-
-    // Cria a dimensão das getdados, diminuindo um pouco da área do folder //devido ao titulo da pasta e bordas do objeto
-	aPosGetD := { 3, 3, oSize:GetDimension("FOLDER","YSIZE") - 16, oSize:GetDimension("FOLDER","XSIZE") - 4 }
-
-    //desenha a getdados
-	o2Get:=MSGetDados():New( aPosGetD[1] ,aPosGetD[2],aPosGetD[3],;
-	aPosGetD[4],nOpc,"At250LinOk( 2 )",'AllWaysTrue',"+AAO_ITEM",.T.,,,,;
-	MAXGETDAD,,,,,oFolder:aDialogs[2])
-
 Return()
