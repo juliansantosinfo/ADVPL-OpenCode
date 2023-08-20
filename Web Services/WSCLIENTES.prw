@@ -5,8 +5,8 @@
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} WSCLIENTES
-@description WebService para consulta de clientes.
-@type wsrestful
+WebService para consulta de clientes.
+@type function
 @author Julian de Almeida Santos
 @since 17/06/2021
 /*/
@@ -31,8 +31,8 @@ END WSRESTFUL
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} GET
-@description Metodo para requisicoes GET, rota CNPJ.
-@type wsmethod
+Metodo para requisicoes GET, rota CNPJ.
+@type function
 @author Julian de Almeida Santos
 @since 17/06/2021
 /*/
@@ -40,7 +40,6 @@ END WSRESTFUL
 WSMETHOD GET CNPJ WSSERVICE WSCLIENTES
 
     // Variaveis.
-    local   cRota     := self:aURLParms[1]
     local   cId       := self:aURLParms[2]
     local   oCliente  := JSonObject():New()
     local   cResponse := ""
@@ -82,8 +81,8 @@ return .T.
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} GET
-@description Metodo para requisicoes GET rota CODIGO.
-@type wsmethod
+Metodo para requisicoes GET rota CODIGO.
+@type function
 @author Julian de Almeida Santos
 @since 17/06/2021
 /*/
@@ -91,7 +90,6 @@ return .T.
 WSMETHOD GET CODIGO WSSERVICE WSCLIENTES
 
     // Variaveis.
-    local   cRota     := self:aURLParms[1]
     local   cId       := self:aURLParms[2]
     local   oCliente  := JSonObject():New()
     local   cResponse := ""
@@ -133,7 +131,7 @@ return .T.
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} POST
-@description Metodo para POST.
+Metodo para POST.
 @type wsmethod
 @author Julian de Almeida Santos
 @since 17/06/2021
@@ -215,8 +213,8 @@ Return .T.
 
 //-------------------------------------------------------------------
 /*/{Protheus.doc} SA1ToJson
-@description Retorna objeto Json com registro SA1 posicionado.
-@type static function
+Retorna objeto Json com registro SA1 posicionado.
+@type function
 @author Julian de Almeida Santos
 @since 14/07/2021
 /*/

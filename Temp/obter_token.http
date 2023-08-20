@@ -1,0 +1,8 @@
+POST http://192.168.56.5:8080/rest/api/oauth2/v1/token
+    ?grant_type=password
+    &username=admin
+    &password= 
+
+POST http://192.168.56.5:8080/rest/api/oauth2/v1/token
+    ?grant_type=refresh_token
+    &refresh_token=JJqeEBwQqAPnMwyro_ybBfla.OJmVUTAtxArJej2qtfr0TsZzk-10lCSVqcieiEuJEXNGQeWbMfHeKDD5KpA9MGhO2A12SSGHUeWJR28Hdduos-kCW6MPKmd6YjCpBymfCczM7yVRNrLUFp9_KJGYyPlYIMi9-h4wrlv2HBAkmcRKivPho4Xbn6-S1pCR891KdHPenSCfLIXk7-PSaeYuwlcOZkWNijqaWtitONc8t5A.aDmKNWtUtdq5_zYmiEfTeySwEw_i_F4z42FYE9iZkiACzpLEymWzuMCtt164NWx-Vc7ypt_A2qr2bLqShFPkwtgvpXOlo6t-wLXj5aU3irrJeKuIF3GUokfn4p0HEgPTNrgCqLRstwpyKnCvw9F7RHh_Cd9HmVWkS_h6gsCsihV-_ZtHAlYxJMdYtOIkILYUS-4PBSLzdTul8BTf2igCOAWAa9Q4t9YBuUKJwYBQEjjaWRsp78UiYVFzS8QkG6F4ixCB70ZGZE0aNkGa66DRzuwHuCon0e99NLqAbNetfuMO3fQLEMcqZDeDrtGIwJfV8vy45aZnJhEJbHyCs4Zc5w

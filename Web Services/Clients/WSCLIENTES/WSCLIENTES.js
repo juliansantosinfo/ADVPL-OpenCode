@@ -114,6 +114,8 @@ $("#btnSearch").click(function (e) {
 $("form").submit(function (e) {
     e.preventDefault();
 
+    token = $("#token").val();
+
     // Set url.
     if ($("#ip").val().length === 0 || $("#port").val().length === 0) {
         $("#success").hide();
@@ -123,6 +125,21 @@ $("form").submit(function (e) {
 
     url = urlBase.replace('{ip}', $("#ip").val())
     url = url.replace('{port}', $("#port").val())
+
+    token = $("#token").val()
+
+    if (token) {
+        authorization = token
+        authorization = "Bearer " + authorization
+    } else {
+        username = $("#username").val()
+        password = $("#password").val()
+        authorization = username + ":" + password
+        authorization = "Basic " + btoa(authorization)
+    }
+
+    // Set route.
+    urlRoute = "/WSCLIENTES"
 
     data = {
         nome: $("#nome").val(),
@@ -141,20 +158,26 @@ $("form").submit(function (e) {
         telefone: $("#telefone").val()
     }
 
-    $.post(url, JSON.stringify(data))
-        .done(() => {
+    $.ajax({
+        type: "POST",
+        url: url + urlRoute,
+        data: JSON.stringify(data),
+        dataType: 'json',
+        async: false,
+        headers: {
+            "Authorization": authorization
+        },
+        success: function (resp) {
             $("#error").hide();
             $("#success").show();
             $("#success").text('Cadastro efetuado com sucesso!');
-        })
-        .fail((x, y, z) => {
+        },
+        error: function (resp) {
             $("#success").hide();
             $("#error").show();
             $("#error").text(x.responseJSON.errorMessage);
-        })
-        .always(() => {
-        });
-
+        }
+    });
 });
 
 $("#btnGetToken").click(function (e) {

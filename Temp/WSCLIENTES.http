@@ -1,0 +1,23 @@
+// -----------------------------------------------------------------------------
+// Basic Authorization
+// -----------------------------------------------------------------------------
+
+// Consulta de cliente por codigo
+GET http://192.168.56.5:8080/rest/WSCLIENTES/CODIGO/00000101 HTTP/1.1
+Authorization: Basic YWRtaW46IA==
+
+// Consulta de cliente por CNPJ
+GET http://192.168.56.5:8080/rest/WSCLIENTES/CNPJ/00000000000000 HTTP/1.1
+Authorization: Basic YWRtaW46IA==
+
+// -----------------------------------------------------------------------------
+// Bearer Token Authorization
+// -----------------------------------------------------------------------------
+
+// Consulta de cliente por codigo
+GET http://192.168.56.5:8080/rest/WSCLIENTES/CODIGO/00000101 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InBKd3RQdWJsaWNLZXlGb3IyNTYifQ.eyJpc3MiOiJUT1RWUy1BRFZQTC1GV0pXVCIsInN1YiI6IkFkbWluaXN0cmFkb3IiLCJpYXQiOjE2OTI1Mzc1MTcsInVzZXJpZCI6IjAwMDAwMCIsImV4cCI6MTY5MjU0MTExNywiZW52SWQiOiJwcm90aGV1cyJ9.g9F5buhUSdTVxVQYP2KgWK7-0X8TRYuBjrDePw2DQgaVSYOCvFERxL47xNBaCsg3p9fTQT_WHXabPS1dT4-G9Sf8WXQQoAFOGNWJ3xoQtbhi9hW09KN6qVJCsdJicv54ie_wwT_EucASXB_PSlFKBCw6pf5QdHJpKHIrw2M6JEly1AkOp2vLbWcbUOEtophY7aR7ZdE4MQD2AFCNKAYtYsftNPI7vIJfCGiEHuvKE5S3QheBWddKGEwKuJtiPRpqqMzlNtmap2vEdRzXIjtAE3JsmRrfBVFyqEsmhNtWUYC1yhAPbCd8I0KXh_MGc_s4iD3PF3TJF6LCgGOF_QqBTQ
+
+// Consulta de cliente por CNPJ
+GET http://192.168.56.5:8080/rest/WSCLIENTES/CNPJ/00000000000000 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InBKd3RQdWJsaWNLZXlGb3IyNTYifQ.eyJpc3MiOiJUT1RWUy1BRFZQTC1GV0pXVCIsInN1YiI6IkFkbWluaXN0cmFkb3IiLCJpYXQiOjE2OTI1Mzc1MTcsInVzZXJpZCI6IjAwMDAwMCIsImV4cCI6MTY5MjU0MTExNywiZW52SWQiOiJwcm90aGV1cyJ9.g9F5buhUSdTVxVQYP2KgWK7-0X8TRYuBjrDePw2DQgaVSYOCvFERxL47xNBaCsg3p9fTQT_WHXabPS1dT4-G9Sf8WXQQoAFOGNWJ3xoQtbhi9hW09KN6qVJCsdJicv54ie_wwT_EucASXB_PSlFKBCw6pf5QdHJpKHIrw2M6JEly1AkOp2vLbWcbUOEtophY7aR7ZdE4MQD2AFCNKAYtYsftNPI7vIJfCGiEHuvKE5S3QheBWddKGEwKuJtiPRpqqMzlNtmap2vEdRzXIjtAE3JsmRrfBVFyqEsmhNtWUYC1yhAPbCd8I0KXh_MGc_s4iD3PF3TJF6LCgGOF_QqBTQ
