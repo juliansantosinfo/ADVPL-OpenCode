@@ -1,0 +1,62 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "totvs_language_debug",
+			"request": "launch",
+			"name": "Local R027",
+			"program": "${command:AskForProgramName}",
+			"smartclientBin": "/home/share/totvs/smartclient/VM_R027/smartclient",
+			"cwb": "${workspaceFolder}",
+			"isMultiSession": true,
+			"enableTableSync": true,
+			"dpiMode": true,
+			"olddpiMode": true
+		},
+		{
+			"type": "totvs_language_debug",
+			"request": "launch",
+			"name": "Local R033",
+			"program": "${command:AskForProgramName}",
+			"smartclientBin": "/home/share/totvs/smartclient/VM_R033/smartclient",
+			"cwb": "${workspaceFolder}",
+			"isMultiSession": true,
+			"enableTableSync": true,
+			"dpiMode": true,
+			"olddpiMode": true
+		},
+		{
+			"type": "totvs_language_debug",
+			"request": "launch",
+			"name": "Local R2210",
+			"program": "${command:AskForProgramName}",
+			"smartclientBin": "/home/share/totvs/smartclient/VM_R2210/smartclient",
+			"cwb": "${workspaceFolder}",
+			"isMultiSession": true,
+			"enableTableSync": true,
+			"dpiMode": true,
+			"olddpiMode": true,
+			"enableMultiThread": true
+		},
+		{
+			"type": "totvs_language_debug",
+			"request": "launch",
+			"name": "Local R2310",
+			"program": "${command:AskForProgramName}",
+			"smartclientBin": "/home/julian/Totvs/smartclient/VM_R2310",
+			"cwb": "${workspaceFolder}",
+			"isMultiSession": true,
+			"enableTableSync": true,
+			"dpiMode": true,
+			"olddpiMode": true,
+			"enableMultiThread": true
+		}
+	],
+	"lastPrograms": [
+		{
+			"label": "SIGAMDI"
+		}
+	],
+	"lastProgramExecuted": "SIGAMDI",
+	"lastProgramArguments": []
+}

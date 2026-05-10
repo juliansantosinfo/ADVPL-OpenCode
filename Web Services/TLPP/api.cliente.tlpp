@@ -1,0 +1,343 @@
+#include 'parmtype.ch'
+#include 'protheus.ch'
+#include 'totvs.ch'
+#include "tlpp-core.th"
+#include "tlpp-rest.th"
+
+namespace api.cliente
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} getCliente
+API para consulta de clientes
+
+@type function
+@author Julian de Almeida Santos
+@since 09/07/2024
+/*/
+//-------------------------------------------------------------------
+@GET(endpoint='faturamento/cadastro/cliente/:codigo/:loja', description="API para consulta de clientes.")
+User Function getCliente() as logical
+    Local lRet              := .T.                  as logical
+    Local jResponse         := JSonObject():New()   as json
+    Local jResponseHeader   := JSonObject():New()   as json
+    Local jPathParams       := oRest:getPathParamsRequest()
+
+    Default cClienteCodigo  := ""
+    Default cClienteLoja    := ""
+
+    Begin Sequence
+
+        If !( jPathParams:hasProperty('codigo') )
+            // Define body da resposta.
+            jResponse['codigo_erro'] := 1
+            jResponse['descricao_erro'] := "Código do cliente não informado."
+            oRest:setFault(jResponse:toJSON())
+
+            // Define statusCode da resposta.
+            oRest:setStatusCode(400)
+        EndIf
+
+        If !( jPathParams:hasProperty('loja') )
+            // Define body da resposta.
+            jResponse['codigo_erro'] := 2
+            jResponse['descricao_erro'] := "Loja do cliente não informada."
+            oRest:setFault(jResponse:toJSON())
+
+            // Define statusCode da resposta.
+            oRest:setStatusCode(400)
+        EndIf
+
+        cClienteCodigo := jPathParams:GetJsonText('codigo')
+        cClienteLoja   := jPathParams:GetJsonText('loja')
+
+        DBSelectArea("SA1")
+        SA1->(DbSetOrder(1))
+
+        If ( SA1->(DbSeek(FWxFilial("SA1") + cClienteCodigo + cClienteLoja)) )
+
+            If SA1->A1_MSBLQL == "2"
+
+                // Define body da resposta.
+                jResponse := ClienteToJSON()
+                oRest:setResponse(jResponse:toJSON())
+                oRest:setStatusCode(200)
+
+            Else
+
+                // Define body da resposta.
+                jResponse['codigo_erro'] := 3
+                jResponse['descricao_erro'] := "Cliente bloqueado."
+                oRest:setFault(jResponse:toJSON())
+
+                // Define statusCode da resposta.
+                oRest:setStatusCode(423)
+
+            EndIf
+
+        Else
+
+            // Define body da resposta.
+            jResponse['codigo_erro'] := 4
+            jResponse['descricao_erro'] := "Cliente não localizado."
+            oRest:setFault(jResponse:toJSON())
+
+            // Define statusCode da resposta.
+            oRest:setStatusCode(404)
+
+        EndIf
+
+
+    End Sequence
+
+    // Define header da resposta.
+    jResponseHeader['Content-Type'] := 'application/json'
+    oRest:setHeaderResponse(jResponseHeader)
+
+Return(lRet)
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} postCliente
+API para consulta de clientes
+
+@type function
+@author Julian de Almeida Santos
+@since 09/07/2024
+/*/
+//-------------------------------------------------------------------
+@POST(endpoint='faturamento/cadastro/cliente', description="API para inclusão de clientes.")
+User Function postCliente() as logical
+    Local lRet              := .T.                      as logical
+    Local jResponse         := JSonObject():New()       as json
+    Local jResponseHeader   := JSonObject():New()       as json
+    Local jRequestBody      := JsonObject():New()       as json
+    Local cRequestBody      := oRest:getBodyRequest()   as character
+    Local aErro             := {}                       as array
+    Local cError            := ""                       as character
+    Local aFields           := {}                       as array
+    Local cField            := ""                       as character
+    Local nFields           := 1                        as numeric
+    Local lInsert           := .F.                      as logical
+
+    Default cClienteCNPJ  := ""
+
+    Begin Sequence
+
+        cError := jRequestBody:fromJson(cRequestBody)
+
+        // Verifica se ouve erro durante o parsing do JSON.
+        if !Empty(cError)
+            jResponse['codigo_erro'] := 1
+            jResponse['descricao_erro'] := "JSON inválido. " + cError
+            oRest:setFault(jResponse:toJSON())
+            oRest:setStatusCode(400)
+            Break
+        endif
+
+        cClienteCNPJ := jRequestBody:GetJsonText('A1_CGC')
+
+        // Verifica conteudo CNPJ.
+        If ( cClienteCNPJ == Nil .Or. cClienteCNPJ == 'null' )
+            jResponse['codigo_erro'] := 2
+            jResponse['descricao_erro'] := "Não localizada propriedade 'cnpj'."
+            oRest:setFault(jResponse:toJSON())
+            oRest:setStatusCode(400)
+            Break
+        EndIf
+
+        // Verifica se cliente já esta cadastrado.
+        DBSelectArea("SA1")
+        SA1->(DbSetOrder(3))
+        If ( SA1->(DbSeek(FWxFilial("SA1") + cClienteCNPJ)) )
+            jResponse['codigo_erro'] := 3
+            jResponse['descricao_erro'] := "Cliente já existe."
+            oRest:setFault(jResponse:toJSON())
+            oRest:setStatusCode(409)
+            Break
+        EndIf
+
+        // Carrega modelo.
+        oModel := FWLoadModel("MATA030")
+        oModel:SetOperation(3)
+        oModel:Activate()
+
+        // Busca modelo com campos.
+        oSA1:= oModel:getModel("MATA030_SA1")
+
+        // Busca propriedades (Fields) do JSON.
+        aFields := jRequestBody:GetNames()
+
+        // Popula modelo com campos recebidos.
+        oSA1:setValue("A1_FILIAL", xFilial("SA1"))
+        oSA1:setValue("A1_COD", GetSXENum("SA1", "A1_COD"))
+        oSA1:setValue("A1_LOJA", "01")
+
+        for nFields := 1 to len(aFields)
+
+            // Define nome do campo e valor.
+            cField := aFields[nFields]
+            xValue := getJsonValue(jRequestBody, cField)
+
+            // Pula campos sem valor.
+            if Empty(xValue)
+                LOOP
+            endif
+
+            // Popula campo no modelo.
+            oSA1:setValue(cField, xValue)
+
+        next
+
+        // Efetiva inclusao
+        If oModel:VldData() .AND. oModel:CommitData()
+            lInsert := .T.
+        EndIf
+
+        If lInsert
+            //Desativa o modelo de dados
+            oModel:DeActivate()
+
+            // Json to String
+            jResponse := ClienteToJSON()
+            oRest:setResponse(jResponse:toJSON())
+            oRest:setStatusCode(201)
+        Else
+
+            //Busca o Erro do Modelo de Dados
+            aErro := oModel:GetErrorMessage()
+
+            jResponse['codigo_erro'] := 4
+            jResponse['descricao_erro'] := "Erro ao salvar cliente."
+            jResponse['ID_FORM_ORI']   := AllToChar(aErro[01])
+            jResponse['ID_CAMPO_ORI']  := AllToChar(aErro[02])
+            jResponse['ID_FORM_ERRO']  := AllToChar(aErro[03])
+            jResponse['ID CAMPO_ERRO'] := AllToChar(aErro[04])
+            jResponse['ID_ERRO']       := AllToChar(aErro[05])
+            jResponse['MSG_ERRO']      := AllToChar(aErro[06])
+            jResponse['MSG_SOLUCAO']   := AllToChar(aErro[07])
+            jResponse['VALOR_ATRIB']   := AllToChar(aErro[08])
+            jResponse['VALOR_ANT']     := AllToChar(aErro[09])
+
+            // Define msg de erro para retorno.
+            oRest:setFault(jResponse:toJSON())
+            oRest:setStatusCode(400)
+
+        EndIf
+
+    End Sequence
+
+    // Define header da resposta.
+    jResponseHeader['Content-Type'] := 'application/json'
+    oRest:setHeaderResponse(jResponseHeader)
+
+Return(lRet)
+
+/*
+Retorna valor da propriedade de um JSON, se nao existir retorna valor default.
+
+@param oJson, json, Objeto JSON a ser consultado.
+@param cKey, character, Propriedade a ser retornado o conteudo.
+@param [xDefault], character, Valor default caso não exista a propriedade.
+
+@return variant, Conteudo da propriedade solicitada.
+*/
+Static Function getJsonValue(oJson, cKey, xDefault) as variant
+
+    // Variaveis.
+    Local xRet       := Nil                             as variant
+    Local cTipoField := GetSX3Cache(cKey, "X3_TIPO")    as character
+    Local nSizeField := GetSX3Cache(cKey, "X3_TAMANHO") as numeric
+
+    Default xDefault := ""
+
+    // Verifica se propriedade existe no objeto json.
+    if !oJSON:hasProperty(cKey)
+        return(xDefault)
+    else
+        xRet := oJSON[cKey]
+    endif
+
+    // Converte conteudo de acordo com tipo do SX3.
+    if ValType(cTipoField) != "U"
+
+        DO CASE
+            CASE cTipoField == "C"
+                if ValType(xRet) != "C"
+                    xRet := AllTrim(Str(xRet))
+                endif
+                xRet := SubStr(xRet, 1, nSizeField)
+            CASE cTipoField == "N"
+                if ValType(xRet) != "N"
+                    xRet := Val(xRet)
+                endif
+            CASE cTipoField == "D"
+                xRet := CTOD(xRet)
+        END CASE
+
+    endif
+
+    if AllTrim(cKey) $ "A1_NOME,A1_NREDUZ"
+        xRet := upper(xRet)
+    endif
+
+Return(xRet)
+
+/*
+Converte cliente posicionado para objeto JSON.
+
+@param [cAlias], character, Alias com dados do cliente, se não informado utiliza SA1.
+@param [cFields], character, Campos que devem ser levados para objeto JSON, se não informado levara todos os campos do alias.
+
+@return json, Objecto JSON com dados do cliente.
+*/
+Static Function ClienteToJSON(cAlias as character, cFields as character) as json
+
+    Local jCliente      := JSonObject():New()   as json
+    Local aStruct       := {}                   as array
+    Local nCampo        := 1                    as numeric
+
+    default cAlias      := "SA1"
+    default cFields     := ""
+
+    // Valida campos selecionados.
+    if ValType(cFields) == "U"
+        cFields := ""
+    endif
+
+    // Guarda estrutura do alias.
+    aStruct := (cAlias)->(DbStruct())
+
+    // Percorre campos da estrutura.
+    for nCampo := 1 to len(aStruct)
+
+        // Valida campos solicitados.
+        if !Empty(cFields)
+            cCampo := AllTrim(aStruct[nCampo,01])
+            if !(cCampo $ cFields)
+                LOOP
+            endif
+        endif
+
+        // Guarda valor do campo atual.
+        xValue := (cAlias)->&(aStruct[nCampo,01])
+
+        // Valida campos de string.
+        if ValType(xValue) == "C"
+            xValue := AllTrim(xValue)
+        endif
+
+        // Pula campos vazios.
+        if (ValType(xValue) $ "C,D" .AND. Empty(xValue)) .OR. (ValType(xValue) == "N" .AND. xValue == 0)
+            LOOP
+        endif
+
+        // Pula campos memo.
+        if ValType(xValue) $ "M"
+            LOOP
+        endif
+
+        // Add campo ao JsonObject.
+        jCliente[aStruct[nCampo,01]] := xValue
+
+    next
+
+Return(jCliente)
